@@ -1,7 +1,29 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { Button } from "@material-ui/core";
+import { toggleTheme } from "../../store/settings/actions";
 
 const SettingsPage = () => {
-    return <h1>Settings</h1>;
+    const settings = useSelector((state: RootState) => state.settings),
+        dispatch = useDispatch();
+
+    return (
+        <div>
+            <h1>Settings</h1>
+            <div>
+                <div>{settings.darkTheme ? "Dark theme" : "Light theme"}</div>
+                <div>
+                    <Button
+                        color="primary"
+                        onClick={() => dispatch(toggleTheme())}
+                    >
+                        Toggle mode
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default SettingsPage;

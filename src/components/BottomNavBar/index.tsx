@@ -1,20 +1,14 @@
-import React, { useEffect, useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent } from "react";
 import styles from "./style.module.scss";
 import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
 import { Home, Map, Settings } from "@material-ui/icons";
+import { useHistory } from "react-router-dom";
 
 const pages = ["Home", "Map", "Settings"];
 
 const BottomNavBar = () => {
-    const [currentPage, setCurrentPage] = useState<string>("Home");
-
-    useEffect(() => {
-        const prevUrl = window.location.href.split("/");
-        prevUrl.splice(prevUrl.length - 1, 1);
-
-        const newUrl = `${prevUrl.join("/")}${parseTabName(currentPage)}`;
-        window.location.href = newUrl;
-    }, [currentPage]);
+    const history = useHistory(),
+        [currentPage, setCurrentPage] = useState<string>("Home");
 
     const parseTabName = (page: string) => {
         if (page === "Home") return "/";
@@ -23,8 +17,12 @@ const BottomNavBar = () => {
         }
     };
 
-    const handleChange = (event: ChangeEvent<{}>, value: string) =>
-        setCurrentPage(value);
+    const handleChange = (event: ChangeEvent<{}>, value: string) => {
+        if (value !== currentPage) {
+            setCurrentPage(value);
+            history.push(parseTabName(value));
+        }
+    };
 
     const selectIcon = (page: string): JSX.Element => {
         switch (page) {

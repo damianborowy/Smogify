@@ -27,6 +27,8 @@ const lightTheme = createMuiTheme({
     },
 });
 
+// TODO:: use BrowserRouter instead of HashRouter to keep map state after changing page
+
 const App = () => {
     const settings = useSelector((state: RootState) => state.settings),
         theme = settings.darkTheme ? darkTheme : lightTheme;

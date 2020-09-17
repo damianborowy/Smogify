@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import ReactMapboxGl, { MapContext } from "react-mapbox-gl";
 import HeatmapDataSource from "../../models/HeatmapDataSource";
 import Feature from "../../models/Feature";
-import { CircularProgress } from "@material-ui/core";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const Map = ReactMapboxGl({
     accessToken:
@@ -11,7 +12,8 @@ const Map = ReactMapboxGl({
 
 const MapPage = () => {
     const dataSource = useRef<HeatmapDataSource | null>(null),
-        [isDataLoaded, setIsDataLoaded] = useState(false);
+        [isDataLoaded, setIsDataLoaded] = useState(false),
+        locationData = useSelector((state: RootState) => state.locationData);
 
     useEffect(() => {
         let isMounted = true;
@@ -44,7 +46,7 @@ const MapPage = () => {
                 height: "100%",
                 width: "100%",
             }}
-            center={[-79.94606, 40.44961]}
+            center={[locationData.location.lng, locationData.location.lat]}
         >
             <MapContext.Consumer>
                 {(map) => {

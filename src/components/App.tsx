@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./App.module.scss";
 import { Route, BrowserRouter } from "react-router-dom";
 import BottomNavBar from "./BottomNavBar";
 import HomePage from "../pages/HomePage";
 import MapPage from "../pages/MapPage";
 import SettingsPage from "../pages/SettingsPage";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
+import { updateLocationThunk } from "../store/location/thunks";
 
 const darkTheme = createMuiTheme({
     palette: {
@@ -29,11 +30,16 @@ const lightTheme = createMuiTheme({
 
 const App = () => {
     const settings = useSelector((state: RootState) => state.settings),
-        theme = settings.darkTheme ? darkTheme : lightTheme;
+        theme = settings.darkTheme ? darkTheme : lightTheme,
+        dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(updateLocationThunk());
+    }, [dispatch]);
 
     return (
-        <ThemeProvider theme={theme}>
-            <BrowserRouter>
+        <BrowserRouter>
+            <ThemeProvider theme={theme}>
                 <div className={styles.wrapper}>
                     <div className={styles.page}>
                         <Route exact path="/" component={HomePage} />
@@ -42,8 +48,8 @@ const App = () => {
                     </div>
                     <BottomNavBar />
                 </div>
-            </BrowserRouter>
-        </ThemeProvider>
+            </ThemeProvider>
+        </BrowserRouter>
     );
 };
 

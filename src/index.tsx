@@ -3,10 +3,12 @@ import ReactDOM from "react-dom";
 import App from "./components/App";
 import * as serviceWorker from "./serviceWorker";
 import { Provider } from "react-redux";
-import { createStore, compose } from "redux";
+import { createStore, compose, applyMiddleware } from "redux";
 import { rootReducer } from "./store/";
 import { throttle } from "lodash";
 import { saveState, loadState } from "./utils/localStorage";
+import { composeWithDevTools } from "redux-devtools-extension";
+import thunk from "redux-thunk";
 
 declare global {
     interface Window {
@@ -15,24 +17,25 @@ declare global {
 }
 
 const persistedState = loadState();
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const middlewares = [thunk];
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composedEnhancers = composeWithDevTools(applyMiddleware(...middlewares));
 
-const store = createStore(rootReducer, persistedState, composeEnhancers());
+const store = createStore(rootReducer, persistedState, composedEnhancers);
 
 store.subscribe(
     throttle(() => {
         saveState({
+            locationData: store.getState().locationData,
             settings: store.getState().settings,
         });
     }, 1000)
 );
 
 ReactDOM.render(
-    <React.StrictMode>
-        <Provider store={store}>
-            <App />
-        </Provider>
-    </React.StrictMode>,
+    <Provider store={store}>
+        <App />
+    </Provider>,
     document.getElementById("root")
 );
 

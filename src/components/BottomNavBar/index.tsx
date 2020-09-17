@@ -1,14 +1,28 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import styles from "./style.module.scss";
 import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
 import { Home, Map, Settings } from "@material-ui/icons";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 const pages = ["Home", "Map", "Settings"];
 
 const BottomNavBar = () => {
     const history = useHistory(),
-        [currentPage, setCurrentPage] = useState<string>("Home");
+        [currentPage, setCurrentPage] = useState<string>("Home"),
+        location = useLocation();
+
+    useEffect(() => {
+        const path = location.pathname;
+
+        if (path === "/") setCurrentPage("Home");
+        else {
+            const lowerCasePath = path.slice(1, path.length);
+            const page =
+                lowerCasePath.charAt(0).toUpperCase() + lowerCasePath.slice(1);
+            setCurrentPage(page);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const parseTabName = (page: string) => {
         if (page === "Home") return "/";

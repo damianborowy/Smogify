@@ -1,12 +1,14 @@
-export const TOGGLE_THEME = "TOGGLE_THEME";
+import Location from "../../models/Location";
 
-export interface SettingsState {
-    darkTheme: boolean;
+export const UPDATE_LOCATION = "UPDATE_LOCATION";
+
+interface UpdateLocation {
+    type: typeof UPDATE_LOCATION;
+    payload: Location;
 }
 
-interface ToggleTheme {
-    type: typeof TOGGLE_THEME;
-    payload: any;
+export interface LocationState {
+    location: Location;
 }
 
-export type SettingsActionTypes = ToggleTheme;
+export type LocationActionTypes = UpdateLocation;

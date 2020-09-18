@@ -1,8 +1,9 @@
-import { TOGGLE_THEME, SettingsActionTypes } from "./types";
+import Location from "../../models/Location";
+import { UPDATE_LOCATION, LocationActionTypes } from "./types";
 
-export function toggleTheme(): SettingsActionTypes {
+export function updateLocation(location: Location): LocationActionTypes {
     return {
-        type: TOGGLE_THEME,
-        payload: "",
+        type: UPDATE_LOCATION,
+        payload: location,
     };
 }

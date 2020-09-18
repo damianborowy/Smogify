@@ -1,18 +1,19 @@
-import { SettingsState, SettingsActionTypes, TOGGLE_THEME } from "./types";
+import Location from "../../models/Location";
+import { LocationState, LocationActionTypes, UPDATE_LOCATION } from "./types";
 
-const initialState: SettingsState = {
-    darkTheme: true,
+const initialState: LocationState = {
+    location: new Location(51.11, 17.033),
 };
 
-export function settingsReducer(
+export function locationReducer(
     state = initialState,
-    action: SettingsActionTypes
-): SettingsState {
+    action: LocationActionTypes
+): LocationState {
     switch (action.type) {
-        case TOGGLE_THEME:
+        case UPDATE_LOCATION:
             return {
                 ...state,
-                darkTheme: !state.darkTheme,
+                location: action.payload,
             };
         default:
             return state;

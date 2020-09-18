@@ -4,6 +4,7 @@ import HeatmapDataSource from "../../models/HeatmapDataSource";
 import Feature from "../../models/Feature";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import { LuftdatenData } from "../../models/Luftdaten";
 
 const Map = ReactMapboxGl({
     accessToken:
@@ -18,20 +19,26 @@ const MapPage = () => {
     useEffect(() => {
         let isMounted = true;
 
-        setTimeout(() => {
-            if (isMounted) {
-                const coords = [
-                    [-79.94606, 40.44961],
-                    [-79.91746, 40.44356],
-                ];
+        (async () => {
+            const pollutionData: LuftdatenData[] = await fetch(
+                "https://data.sensor.community/static/v2/data.1h.json"
+            ).then((res) => res.json());
 
+            if (isMounted) {
                 dataSource.current = new HeatmapDataSource(
-                    coords.map((coord) => new Feature(100, coord[0], coord[1]))
+                    pollutionData.map(
+                        (data) =>
+                            new Feature(
+                                +data.sensordatavalues[0].value,
+                                +data.location.longitude,
+                                +data.location.latitude
+                            )
+                    )
                 );
 
                 setIsDataLoaded(true);
             }
-        }, 3000);
+        })();
 
         return () => {
             isMounted = false;

@@ -10,6 +10,7 @@ import { RootState } from "../store";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
 import { updateLocationThunk } from "../store/location/thunks";
+import { fetchPollutionData } from "../store/luftdaten/thunks";
 
 const darkTheme = createMuiTheme({
     palette: {
@@ -35,6 +36,7 @@ const App = () => {
 
     useEffect(() => {
         dispatch(updateLocationThunk());
+        dispatch(fetchPollutionData());
     }, [dispatch]);
 
     return (

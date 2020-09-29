@@ -26,7 +26,8 @@ const store = createStore(rootReducer, persistedState, composedEnhancers);
 store.subscribe(
     throttle(() => {
         saveState({
-            locationData: store.getState().locationData,
+            luftdaten: store.getState().luftdaten,
+            location: store.getState().location,
             settings: store.getState().settings,
         });
     }, 1000)

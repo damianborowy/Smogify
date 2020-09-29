@@ -4,7 +4,6 @@ import HeatmapDataSource from "../../models/HeatmapDataSource";
 import Feature from "../../models/Feature";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { LuftdatenData } from "../../models/Luftdaten";
 
 const Map = ReactMapboxGl({
     accessToken:
@@ -12,38 +11,27 @@ const Map = ReactMapboxGl({
 });
 
 const MapPage = () => {
-    const dataSource = useRef<HeatmapDataSource | null>(null),
-        [isDataLoaded, setIsDataLoaded] = useState(false),
-        locationData = useSelector((state: RootState) => state.locationData);
+    const locationData = useSelector((state: RootState) => state.location),
+        luftdatenData = useSelector((state: RootState) => state.luftdaten),
+        [dataSource, setDataSource] = useState<HeatmapDataSource | null>(null),
+        counter = useRef(0);
 
     useEffect(() => {
-        let isMounted = true;
-
-        (async () => {
-            const pollutionData: LuftdatenData[] = await fetch(
-                "https://data.sensor.community/static/v2/data.1h.json"
-            ).then((res) => res.json());
-
-            if (isMounted) {
-                dataSource.current = new HeatmapDataSource(
-                    pollutionData.map(
+        if (luftdatenData.pollutionData) {
+            setDataSource(
+                new HeatmapDataSource(
+                    luftdatenData.pollutionData?.sensorReadings.map(
                         (data) =>
                             new Feature(
-                                +data.sensordatavalues[0].value,
-                                +data.location.longitude,
-                                +data.location.latitude
+                                data.pm25!,
+                                data.location.lng,
+                                data.location.lat
                             )
                     )
-                );
-
-                setIsDataLoaded(true);
-            }
-        })();
-
-        return () => {
-            isMounted = false;
-        };
-    });
+                )
+            );
+        }
+    }, [luftdatenData]);
 
     return (
         <Map
@@ -57,17 +45,17 @@ const MapPage = () => {
         >
             <MapContext.Consumer>
                 {(map) => {
-                    if (isDataLoaded) {
-                        map.addSource("data", {
+                    if (dataSource) {
+                        map.addSource("data" + counter.current, {
                             type: "geojson",
-                            data: dataSource.current,
+                            data: dataSource,
                         });
 
                         map.addLayer(
                             {
-                                id: "data-heat",
+                                id: "data-heat" + counter.current,
                                 type: "heatmap",
-                                source: "data",
+                                source: "data" + counter.current,
                                 maxzoom: 15,
                                 paint: {
                                     "heatmap-weight": {
@@ -75,7 +63,7 @@ const MapPage = () => {
                                         type: "exponential",
                                         stops: [
                                             [1, 0],
-                                            [62, 1],
+                                            [300, 1],
                                         ],
                                     },
                                     "heatmap-intensity": {
@@ -89,26 +77,31 @@ const MapPage = () => {
                                         ["linear"],
                                         ["heatmap-density"],
                                         0,
-                                        "rgba(236,222,239,0)",
-                                        0.2,
-                                        "rgb(208,209,230)",
-                                        0.4,
-                                        "rgb(166,189,219)",
-                                        0.6,
-                                        "rgb(103,169,207)",
-                                        0.8,
-                                        "rgb(28,144,153)",
+                                        "rgba(0,0,0,0)",
+                                        0.00001,
+                                        "#009966",
+                                        0.166,
+                                        "#ffde33",
+                                        0.333,
+                                        "#ff9933",
+                                        0.5,
+                                        "#cc0033",
+                                        0.666,
+                                        "#660099",
+                                        0.833,
+                                        "#7e0023",
                                     ],
                                     "heatmap-radius": {
                                         stops: [
                                             [11, 15],
-                                            [15, 20],
+                                            [15, 5],
+                                            [30, 1],
                                         ],
                                     },
                                     "heatmap-opacity": {
-                                        default: 1,
+                                        default: 0.9,
                                         stops: [
-                                            [14, 1],
+                                            [14, 0.9],
                                             [15, 0],
                                         ],
                                     },
@@ -119,9 +112,9 @@ const MapPage = () => {
 
                         map.addLayer(
                             {
-                                id: "data-point",
+                                id: "data-point" + counter.current,
                                 type: "circle",
-                                source: "data",
+                                source: "data" + counter.current,
                                 minzoom: 14,
                                 paint: {
                                     "circle-radius": {
@@ -159,6 +152,8 @@ const MapPage = () => {
                             },
                             "waterway-label"
                         );
+
+                        counter.current++;
 
                         return <></>;
                     }

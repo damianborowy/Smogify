@@ -1,7 +1,9 @@
 import { Action } from "redux";
 import { ThunkAction } from "redux-thunk";
 import { RootState } from "..";
+import { FetchedLuftdatenData } from "../../models/Luftdaten";
 import { LuftdatenData } from "../../models/Luftdaten";
+import { updatePollutionData } from "./actions";
 
 export const fetchPollutionData = (): ThunkAction<
     Promise<void>,
@@ -9,9 +11,11 @@ export const fetchPollutionData = (): ThunkAction<
     unknown,
     Action<string>
 > => async (dispatch) => {
-    const pollutionData: LuftdatenData[] = await fetch(
+    const luftdatenData: FetchedLuftdatenData[] = await fetch(
         "https://data.sensor.community/static/v2/data.1h.json"
     ).then((res) => res.json());
 
-    console.log(pollutionData);
+    const pollutionData = LuftdatenData.fromLuftdaten(luftdatenData);
+
+    dispatch(updatePollutionData(pollutionData));
 };

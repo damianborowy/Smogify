@@ -21,7 +21,8 @@ export class SensorReading {
         public pm10?: number,
         public temperature?: number,
         public humidity?: number,
-        public pressure?: number
+        public pressure?: number,
+        public aqi?: number
     ) {}
 }
 
@@ -35,7 +36,9 @@ export class LuftdatenData {
     }
 
     public static fromLuftdaten(luftdatenData: FetchedLuftdatenData[]) {
-        const sensorReadingArray = luftdatenData.map((data) => {
+        const list: number[] = [];
+
+        const sensorReadings = luftdatenData.map((data) => {
             const sensorReading = new SensorReading(
                 new Location(data.location.latitude, data.location.longitude)
             );
@@ -44,6 +47,7 @@ export class LuftdatenData {
                 switch (reading.value_type) {
                     case "P1":
                         sensorReading.pm10 = reading.value;
+                        list.push(reading.value);
                         break;
                     case "P2":
                         sensorReading.pm25 = reading.value;
@@ -60,9 +64,11 @@ export class LuftdatenData {
                 }
             });
 
+            // TODO:: implement AQI
+
             return sensorReading;
         });
 
-        return new LuftdatenData(new Date(), sensorReadingArray);
+        return new LuftdatenData(new Date(), sensorReadings);
     }
 }

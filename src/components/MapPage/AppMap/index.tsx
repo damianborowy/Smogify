@@ -69,6 +69,16 @@ const AppMap = ({ dataType }: AppMapProps) => {
             <MapContext.Consumer>
                 {(map) => {
                     if (dataSource) {
+                        if (counter.current > 0) {
+                            map.removeLayer(
+                                "data-heat" + (counter.current - 1)
+                            );
+                            map.removeLayer(
+                                "data-point" + (counter.current - 1)
+                            );
+                            map.removeSource("data" + (counter.current - 1));
+                        }
+
                         map.addSource("data" + counter.current, {
                             type: "geojson",
                             data: dataSource,

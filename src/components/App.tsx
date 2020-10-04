@@ -1,13 +1,18 @@
 import React, { useEffect } from "react";
 import styles from "./App.module.scss";
 import { Route, BrowserRouter } from "react-router-dom";
-import BottomNavBar from "./BottomNavBar";
-import HomePage from "../pages/HomePage";
-import MapPage from "../pages/MapPage";
-import SettingsPage from "../pages/SettingsPage";
+import Navigation from "./Navigation";
+import HomePage from "./HomePage";
+import MapPage from "./MapPage";
+import SettingsPage from "./SettingsPage";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { ThemeProvider, createMuiTheme } from "@material-ui/core";
+import {
+    ThemeProvider,
+    createMuiTheme,
+    useTheme,
+    useMediaQuery,
+} from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
 import { updateLocationThunk } from "../store/location/thunks";
 import { fetchPollutionData } from "../store/luftdaten/thunks";
@@ -31,7 +36,9 @@ const lightTheme = createMuiTheme({
 
 const App = () => {
     const settings = useSelector((state: RootState) => state.settings),
-        theme = settings.darkTheme ? darkTheme : lightTheme,
+        theme = useTheme(),
+        isSmall = useMediaQuery(theme.breakpoints.up("md")),
+        appTheme = settings.darkTheme ? darkTheme : lightTheme,
         dispatch = useDispatch();
 
     useEffect(() => {
@@ -41,14 +48,18 @@ const App = () => {
 
     return (
         <BrowserRouter>
-            <ThemeProvider theme={theme}>
-                <div className={styles.wrapper}>
+            <ThemeProvider theme={appTheme}>
+                <div
+                    className={
+                        isSmall ? styles.wrapperDrawer : styles.wrapperNavBar
+                    }
+                >
                     <div className={styles.page}>
                         <Route exact path="/" component={HomePage} />
                         <Route path="/map" component={MapPage} />
                         <Route path="/settings" component={SettingsPage} />
                     </div>
-                    <BottomNavBar />
+                    <Navigation drawerMode={isSmall} />
                 </div>
             </ThemeProvider>
         </BrowserRouter>

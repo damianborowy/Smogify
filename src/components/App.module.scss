@@ -1,7 +1,13 @@
-.wrapper {
+.wrapperNavBar {
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+
+.wrapperDrawer {
+    height: 100%;
+    display: flex;
+    flex-direction: row-reverse;
 }
 
 .page {

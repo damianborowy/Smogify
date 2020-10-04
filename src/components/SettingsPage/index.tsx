@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./style.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { Button, Paper } from "@material-ui/core";
@@ -9,7 +10,7 @@ const SettingsPage = () => {
         dispatch = useDispatch();
 
     return (
-        <div>
+        <div className={styles.container}>
             <h1>Settings</h1>
             <div>
                 <div>{settings.darkTheme ? "Dark theme" : "Light theme"}</div>

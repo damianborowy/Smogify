@@ -25,7 +25,6 @@ const AppMap = ({ dataType }: AppMapProps) => {
 
     useEffect(() => {
         if (luftdatenData.pollutionData) {
-            console.log(luftdatenData);
             setDataSource(
                 new HeatmapDataSource(
                     luftdatenData.pollutionData?.sensorReadings.map((data) => {

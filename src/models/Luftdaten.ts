@@ -64,11 +64,42 @@ export class LuftdatenData {
                 }
             });
 
-            // TODO:: implement AQI
+            sensorReading.aqi = this.calculateAQI(sensorReading);
 
             return sensorReading;
         });
 
         return new LuftdatenData(new Date(), sensorReadings);
+    }
+
+    public static calculateAQI(reading: SensorReading) {
+        let pm25index = 0;
+        let pm10index = 0;
+
+        if (reading.pm25) {
+            const { pm25 } = reading;
+
+            if (pm25 < 13.1) pm25index = 1;
+            else if (pm25 < 35.1) pm25index = 2;
+            else if (pm25 < 55.1) pm25index = 3;
+            else if (pm25 < 75.1) pm25index = 4;
+            else if (pm25 < 110.1) pm25index = 5;
+            else pm25index = 6;
+        }
+
+        if (reading.pm10) {
+            const { pm10 } = reading;
+
+            if (pm10 < 20.1) pm10index = 1;
+            else if (pm10 < 50.1) pm10index = 2;
+            else if (pm10 < 80.1) pm10index = 3;
+            else if (pm10 < 110.1) pm10index = 4;
+            else if (pm10 < 150.1) pm10index = 5;
+            else pm10index = 6;
+        }
+
+        const aqi = Math.max(pm25index, pm10index);
+
+        return aqi > 0 ? aqi : undefined;
     }
 }

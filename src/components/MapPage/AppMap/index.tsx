@@ -1,16 +1,31 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ReactMapboxGl, { MapContext } from "react-mapbox-gl";
 import HeatmapDataSource from "../../../models/HeatmapDataSource";
 import Feature from "../../../models/Feature";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
+import Location from "../../../models/Location";
+import _ from "lodash";
+import { useTheme } from "@material-ui/core";
+
+const breakpointLayers = ["housenum-label", "road-label"];
+
+type MoveEvent = {
+    target: {
+        transform: {
+            _center: {
+                lat: number;
+                lng: number;
+            };
+        };
+    };
+};
 
 const Map = ReactMapboxGl({
     accessToken:
         "pk.eyJ1IjoidHltb290ZXV1c3oiLCJhIjoiY2tldmw3N3p6MTB1aTJxcDd3ZDIzdnUycyJ9.ZpNCPh7aJsDpg5uzTZIuUQ",
 });
 
-// TODO:: rewrite map using react-mapbox-gl
 // ? try using just one layer of circles and color them with a proper gradient
 
 interface AppMapProps {
@@ -21,7 +36,16 @@ const AppMap = ({ dataType }: AppMapProps) => {
     const locationData = useSelector((state: RootState) => state.location),
         luftdatenData = useSelector((state: RootState) => state.luftdaten),
         [dataSource, setDataSource] = useState<HeatmapDataSource | null>(null),
+        [location, setLocation] = useState(
+            new Location(locationData.location.lat, locationData.location.lng)
+        ),
         counter = useRef(0);
+
+    const onMoveCallback = (e: MoveEvent) => {
+        const { lat, lng } = e.target.transform._center;
+
+        setLocation(new Location(lat, lng));
+    };
 
     useEffect(() => {
         if (luftdatenData.pollutionData) {
@@ -56,27 +80,80 @@ const AppMap = ({ dataType }: AppMapProps) => {
         }
     }, [dataType, luftdatenData]);
 
+    const MemoizedMap = useMemo(
+        () => (
+            <MapComponent
+                dataSource={dataSource}
+                onMoveCallback={onMoveCallback}
+                location={location}
+                counter={counter}
+            />
+        ),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [dataSource]
+    );
+
+    return <>{MemoizedMap}</>;
+};
+
+interface MapComponentProps {
+    dataSource: HeatmapDataSource | null;
+    onMoveCallback: (e: MoveEvent) => void;
+    location: Location;
+    counter: React.MutableRefObject<number>;
+}
+
+const MapComponent = ({
+    dataSource,
+    onMoveCallback,
+    location,
+    counter,
+}: MapComponentProps) => {
+    const theme = useTheme();
+
     return (
         <Map
             // eslint-disable-next-line react/style-prop-object
-            style="mapbox://styles/mapbox/streets-v9"
+            style={
+                theme.palette.type === "dark"
+                    ? "mapbox://styles/tymooteuusz/ckfwt9ldm4w8w1apkqpo6q8fw"
+                    : "mapbox://styles/mapbox/streets-v9"
+            }
             containerStyle={{
                 height: "100%",
                 width: "100%",
             }}
-            center={[locationData.location.lng, locationData.location.lat]}
+            center={[location.lng, location.lat]}
         >
             <MapContext.Consumer>
                 {(map) => {
                     if (dataSource) {
                         if (counter.current > 0) {
                             map.removeLayer(
-                                "data-heat" + (counter.current - 1)
+                                "data-circle" + (counter.current - 1)
                             );
                             map.removeLayer(
                                 "data-point" + (counter.current - 1)
                             );
                             map.removeSource("data" + (counter.current - 1));
+                        } else {
+                            map.on("move", onMoveCallback);
+                        }
+
+                        const layers = map.getStyle().layers;
+                        let firstSymbolId;
+
+                        console.log(
+                            layers.filter(
+                                (layer: any) => layer.type === "symbol"
+                            )
+                        );
+
+                        for (let i = 0; i < layers.length; i++) {
+                            if (breakpointLayers.includes(layers[i].id)) {
+                                firstSymbolId = layers[i].id;
+                                break;
+                            }
                         }
 
                         map.addSource("data" + counter.current, {
@@ -86,61 +163,42 @@ const AppMap = ({ dataType }: AppMapProps) => {
 
                         map.addLayer(
                             {
-                                id: "data-heat" + counter.current,
-                                type: "heatmap",
+                                id: "data-circle" + counter.current,
+                                type: "circle",
                                 source: "data" + counter.current,
-                                maxzoom: 15,
+                                minzoom: 0,
                                 paint: {
-                                    "heatmap-weight": {
+                                    // Size circle radius by earthquake magnitude and zoom level
+                                    "circle-radius": {
+                                        stops: [
+                                            [0, 1],
+                                            [12, 10],
+                                            [20, 15],
+                                        ],
+                                    },
+                                    "circle-color": {
                                         property: "dbh",
                                         type: "exponential",
                                         stops: [
-                                            [1, 0],
-                                            [300, 1],
+                                            [0, "rgba(0, 153, 102, 0.5)"],
+                                            [13.1, "rgba(255, 222, 51, 0.5)"],
+                                            [55.1, "rgba(255, 153, 51, 0.5)"],
+                                            [75.1, "rgba(204, 0, 51, 0.5)"],
+                                            [110.1, "rgba(102, 0, 153, 0.5)"],
+                                            [200, "rgba(126, 0, 35, 0.5)"],
                                         ],
                                     },
-                                    "heatmap-intensity": {
+                                    "circle-stroke-color": "white",
+                                    "circle-stroke-width": 0,
+                                    "circle-opacity": {
                                         stops: [
-                                            [11, 1],
-                                            [15, 3],
-                                        ],
-                                    },
-                                    "heatmap-color": [
-                                        "interpolate",
-                                        ["linear"],
-                                        ["heatmap-density"],
-                                        0,
-                                        "rgba(0,0,0,0)",
-                                        0.00001,
-                                        "#009966",
-                                        0.166,
-                                        "#ffde33",
-                                        0.333,
-                                        "#ff9933",
-                                        0.5,
-                                        "#cc0033",
-                                        0.666,
-                                        "#660099",
-                                        0.833,
-                                        "#7e0023",
-                                    ],
-                                    "heatmap-radius": {
-                                        stops: [
-                                            [11, 15],
-                                            [15, 5],
-                                            [30, 1],
-                                        ],
-                                    },
-                                    "heatmap-opacity": {
-                                        default: 0.9,
-                                        stops: [
-                                            [14, 0.9],
-                                            [15, 0],
+                                            [12, 1],
+                                            [13, 0],
                                         ],
                                     },
                                 },
                             },
-                            "waterway-label"
+                            firstSymbolId
                         );
 
                         map.addLayer(
@@ -148,42 +206,32 @@ const AppMap = ({ dataType }: AppMapProps) => {
                                 id: "data-point" + counter.current,
                                 type: "circle",
                                 source: "data" + counter.current,
-                                minzoom: 14,
+                                minzoom: 0,
                                 paint: {
-                                    "circle-radius": {
-                                        property: "dbh",
-                                        type: "exponential",
-                                        stops: [
-                                            [{ zoom: 15, value: 1 }, 5],
-                                            [{ zoom: 15, value: 62 }, 10],
-                                            [{ zoom: 22, value: 1 }, 20],
-                                            [{ zoom: 22, value: 62 }, 50],
-                                        ],
-                                    },
+                                    "circle-radius": 10,
                                     "circle-color": {
                                         property: "dbh",
                                         type: "exponential",
                                         stops: [
-                                            [0, "rgba(236,222,239,0)"],
-                                            [10, "rgb(236,222,239)"],
-                                            [20, "rgb(208,209,230)"],
-                                            [30, "rgb(166,189,219)"],
-                                            [40, "rgb(103,169,207)"],
-                                            [50, "rgb(28,144,153)"],
-                                            [60, "rgb(1,108,89)"],
+                                            [0, "rgb(0, 153, 102)"],
+                                            [13.1, "rgb(255, 222, 51)"],
+                                            [55.1, "rgb(255, 153, 51)"],
+                                            [75.1, "rgb(204, 0, 51)"],
+                                            [110.1, "rgb(102, 0, 153)"],
+                                            [200, "rgb(126, 0, 35)"],
                                         ],
                                     },
                                     "circle-stroke-color": "white",
-                                    "circle-stroke-width": 1,
+                                    "circle-stroke-width": 0,
                                     "circle-opacity": {
                                         stops: [
-                                            [14, 0],
-                                            [15, 1],
+                                            [12, 0],
+                                            [13, 1],
                                         ],
                                     },
                                 },
                             },
-                            "waterway-label"
+                            firstSymbolId
                         );
 
                         counter.current++;

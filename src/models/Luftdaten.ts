@@ -22,7 +22,9 @@ export class SensorReading {
         public temperature?: number,
         public humidity?: number,
         public pressure?: number,
-        public aqi?: number
+        public aqi?: number,
+        public aqi25?: number,
+        public aqi10?: number
     ) {}
 }
 
@@ -64,7 +66,7 @@ export class LuftdatenData {
                 }
             });
 
-            sensorReading.aqi = this.calculateAQI(sensorReading);
+            this.calculateAQI(sensorReading);
 
             return sensorReading;
         });
@@ -85,6 +87,8 @@ export class LuftdatenData {
             else if (pm25 < 75.1) pm25index = 4;
             else if (pm25 < 110.1) pm25index = 5;
             else pm25index = 6;
+
+            reading.aqi25 = pm25index;
         }
 
         if (reading.pm10) {
@@ -96,10 +100,10 @@ export class LuftdatenData {
             else if (pm10 < 110.1) pm10index = 4;
             else if (pm10 < 150.1) pm10index = 5;
             else pm10index = 6;
+
+            reading.aqi10 = pm10index;
         }
 
-        const aqi = Math.max(pm25index, pm10index);
-
-        return aqi > 0 ? aqi : undefined;
+        reading.aqi = Math.max(pm25index, pm10index);
     }
 }

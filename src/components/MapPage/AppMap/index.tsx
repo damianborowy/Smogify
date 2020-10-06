@@ -28,6 +28,7 @@ const AppMap = ({ dataType }: AppMapProps) => {
         [location, setLocation] = useState(
             new Location(locationData.location.lat, locationData.location.lng)
         ),
+        [selectedStation, setSelectedStation] = useState(),
         counter = useRef(0);
 
     const onMoveCallback = (e: MoveEvent) => {
@@ -58,11 +59,7 @@ const AppMap = ({ dataType }: AppMapProps) => {
                                 break;
                         }
 
-                        return new Feature(
-                            dbh,
-                            data.location.lng,
-                            data.location.lat
-                        );
+                        return new Feature(dbh, data);
                     })
                 )
             );
@@ -76,6 +73,7 @@ const AppMap = ({ dataType }: AppMapProps) => {
                 onMoveCallback={onMoveCallback}
                 location={location}
                 counter={counter}
+                dataType={dataType}
             />
         ),
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,11 +1,16 @@
+import { SensorReading } from "./Luftdaten";
+
 export default class Feature {
-    constructor(dbh: number, lat: number, lng: number) {
+    constructor(dbh: number, sensorReading: SensorReading) {
         return {
             type: "Feature",
-            properties: { dbh },
+            properties: { dbh, sensorReading },
             geometry: {
                 type: "Point",
-                coordinates: [lat, lng],
+                coordinates: [
+                    sensorReading.location.lng,
+                    sensorReading.location.lat,
+                ],
             },
         };
     }

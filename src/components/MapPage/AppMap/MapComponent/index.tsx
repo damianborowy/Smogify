@@ -12,11 +12,48 @@ const Map = ReactMapboxGl({
         "pk.eyJ1IjoidHltb290ZXV1c3oiLCJhIjoiY2tldmw3N3p6MTB1aTJxcDd3ZDIzdnUycyJ9.ZpNCPh7aJsDpg5uzTZIuUQ",
 });
 
+const aqiColors = [
+    "match",
+    ["get", "dbh"],
+    1,
+    "rgb(114, 213, 40)",
+    2,
+    "rgb(240, 223, 15)",
+    3,
+    "rgb(240, 124, 47)",
+    4,
+    "rgb(239, 42, 54)",
+    5,
+    "rgb(185, 0, 92)",
+    6,
+    "rgb(132, 0, 132)",
+    "rgba(0, 0, 0, 0)",
+];
+
+const temperatureColors = [
+    "match",
+    ["get", "dbh"],
+    1,
+    "rgb(114, 213, 40)",
+    2,
+    "rgb(240, 223, 15)",
+    3,
+    "rgb(240, 124, 47)",
+    4,
+    "rgb(239, 42, 54)",
+    5,
+    "rgb(185, 0, 92)",
+    6,
+    "rgb(132, 0, 132)",
+    "rgba(0, 0, 0, 0)",
+];
+
 interface MapComponentProps {
     dataSource: HeatmapDataSource | null;
     onMoveCallback: (e: MoveEvent) => void;
     location: Location;
     counter: React.MutableRefObject<number>;
+    dataType: string;
 }
 
 const MapComponent = ({
@@ -24,6 +61,7 @@ const MapComponent = ({
     onMoveCallback,
     location,
     counter,
+    dataType,
 }: MapComponentProps) => {
     const theme = useTheme();
 
@@ -56,12 +94,6 @@ const MapComponent = ({
                         const layers = map.getStyle().layers;
                         let firstSymbolId;
 
-                        console.log(
-                            layers.filter(
-                                (layer: any) => layer.type === "symbol"
-                            )
-                        );
-
                         for (let i = 0; i < layers.length; i++) {
                             if (breakpointLayers.includes(layers[i].id)) {
                                 firstSymbolId = layers[i].id;
@@ -88,42 +120,29 @@ const MapComponent = ({
                                             [14, 15],
                                         ],
                                     },
-                                    "circle-color": {
-                                        property: "dbh",
-                                        type: "exponential",
+                                    "circle-color":
+                                        dataType === "Temperature"
+                                            ? temperatureColors
+                                            : aqiColors,
+                                    "circle-opacity": {
                                         stops: [
-                                            [0, "rgba(114, 213, 40, 0.5)"],
-                                            [13.1, "rgba(240, 223, 15, 0.5)"],
-                                            [55.1, "rgba(240, 124, 47, 0.5)"],
-                                            [75.1, "rgba(239, 42, 54, 0.5)"],
-                                            [110.1, "rgba(185, 0, 92, 0.5)"],
-                                            [1000, "rgba(132, 0, 132, 0.5)"],
+                                            [0, 0.5],
+                                            [8, 0.7],
+                                            [14, 1],
                                         ],
                                     },
-                                    // "circle-color": [
-                                    //     "match",
-                                    //     ["get", "ethnicity"],
-                                    //     "White",
-                                    //     "#fbb03b",
-                                    //     "Black",
-                                    //     "#223b53",
-                                    //     "Hispanic",
-                                    //     "#e55e5e",
-                                    //     "Asian",
-                                    //     "#3bb2d0",
-                                    //     /* other */ "#ccc",
-                                    // ],
-                                    // "circle-stroke-color": "white",
-                                    // "circle-stroke-width": 0,
-                                    // "circle-opacity": {
-                                    //     stops: [
-                                    //         [12, 1],
-                                    //         [13, 0],
-                                    //     ],
-                                    // },
                                 },
                             },
                             firstSymbolId
+                        );
+
+                        map.on(
+                            "click",
+                            "data-circle" + counter.current,
+                            function (e: any) {
+                                // console.log(e.features[0].properties.dbh);
+                                console.log(e.features);
+                            }
                         );
 
                         counter.current++;

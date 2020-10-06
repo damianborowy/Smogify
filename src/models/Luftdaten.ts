@@ -20,6 +20,7 @@ export class SensorReading {
         public pm25?: number,
         public pm10?: number,
         public temperature?: number,
+        public temperatureGroup?: number,
         public humidity?: number,
         public pressure?: number,
         public aqi?: number,
@@ -38,8 +39,6 @@ export class LuftdatenData {
     }
 
     public static fromLuftdaten(luftdatenData: FetchedLuftdatenData[]) {
-        const list: number[] = [];
-
         const sensorReadings = luftdatenData.map((data) => {
             const sensorReading = new SensorReading(
                 new Location(data.location.latitude, data.location.longitude)
@@ -49,7 +48,6 @@ export class LuftdatenData {
                 switch (reading.value_type) {
                     case "P1":
                         sensorReading.pm10 = reading.value;
-                        list.push(reading.value);
                         break;
                     case "P2":
                         sensorReading.pm25 = reading.value;
@@ -71,7 +69,16 @@ export class LuftdatenData {
             return sensorReading;
         });
 
-        return new LuftdatenData(new Date(), sensorReadings);
+        return new LuftdatenData(
+            new Date(),
+            this.coalesceReadings(sensorReadings)
+        );
+    }
+
+    public static coalesceReadings(readings: SensorReading[]) {
+        // TODO:: implement coalescing algorithm
+
+        return readings;
     }
 
     public static calculateAQI(reading: SensorReading) {

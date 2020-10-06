@@ -12,7 +12,7 @@ export const fetchPollutionData = (): ThunkAction<
     Action<string>
 > => async (dispatch) => {
     const luftdatenData: FetchedLuftdatenData[] = await fetch(
-        "https://data.sensor.community/static/v2/data.1h.json"
+        "https://data.sensor.community/static/v1/data.json"
     ).then((res) => res.json());
 
     const pollutionData = LuftdatenData.fromLuftdaten(luftdatenData);

@@ -21,8 +21,6 @@ export class SensorReading {
         public pm10?: number,
         public temperature?: number,
         public temperatureGroup?: number,
-        public humidity?: number,
-        public pressure?: number,
         public aqi?: number,
         public aqi25?: number,
         public aqi10?: number
@@ -52,36 +50,58 @@ export class LuftdatenData {
                     case "P2":
                         sensorReading.pm25 = reading.value;
                         break;
-                    case "humidity":
-                        sensorReading.humidity = reading.value;
-                        break;
                     case "temperature":
                         sensorReading.temperature = reading.value;
-                        break;
-                    case "pressure":
-                        sensorReading.pressure = reading.value;
                         break;
                 }
             });
 
-            this.calculateAQI(sensorReading);
-
             return sensorReading;
         });
 
-        return new LuftdatenData(
-            new Date(),
-            this.coalesceReadings(sensorReadings)
-        );
+        const coalescedReadings = this.coalesceReadings(sensorReadings);
+
+        coalescedReadings.forEach((reading) => this.deriveProps(reading));
+
+        return new LuftdatenData(new Date(), coalescedReadings);
     }
 
-    public static coalesceReadings(readings: SensorReading[]) {
-        // TODO:: implement coalescing algorithm
+    private static coalesceReadings(readings: SensorReading[]) {
+        const tempReadings = readings.map((reading) => {
+            return {
+                id: `${reading.location.lat} ${reading.location.lng}`,
+                reading,
+            };
+        });
 
-        return readings;
+        const map = new Map<string, SensorReading>();
+
+        tempReadings.forEach((readingObj) => {
+            if (map.has(readingObj.id)) {
+                const existingReading = map.get(readingObj.id)!;
+
+                map.set(
+                    readingObj.id,
+                    this.mergeReadings(existingReading, readingObj.reading)
+                );
+            } else map.set(readingObj.id, readingObj.reading);
+        });
+
+        return Array.from(map.values());
     }
 
-    public static calculateAQI(reading: SensorReading) {
+    private static mergeReadings = (
+        existing: SensorReading,
+        other: SensorReading
+    ) => {
+        if (!existing.pm10) existing.pm10 = other.pm10;
+        if (!existing.pm25) existing.pm25 = other.pm25;
+        if (!existing.temperature) existing.temperature = other.temperature;
+
+        return existing;
+    };
+
+    private static deriveProps(reading: SensorReading) {
         let pm25index = 0;
         let pm10index = 0;
 

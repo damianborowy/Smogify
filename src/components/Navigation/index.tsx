@@ -98,6 +98,7 @@ const Navigation = ({ drawerMode }: NavigationProps) => {
                 </Drawer>
             ) : (
                 <BottomNavigation
+                    className={styles.bottomNav}
                     value={currentPage}
                     onChange={handleBottomNavBarChange}
                     showLabels

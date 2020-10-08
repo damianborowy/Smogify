@@ -1,0 +1,22 @@
+.base {
+    background: #000;
+    width: 100%;
+    transition: 0.5s ease height;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    z-index: 10;
+}
+
+.open {
+    height: 100px;
+}
+
+.expanded {
+    height: 100%;
+}
+
+.closed {
+    height: 0;
+    visibility: none;
+}

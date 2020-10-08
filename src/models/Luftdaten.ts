@@ -14,6 +14,12 @@ export type FetchedLuftdatenData = {
     timestamp: Date;
 };
 
+export type TemperatureGroups = {
+    name: string;
+    minValue: number;
+    maxValue: number;
+};
+
 export class SensorReading {
     constructor(
         public location: Location,
@@ -26,6 +32,61 @@ export class SensorReading {
         public aqi10?: number
     ) {}
 }
+
+export const temperatureGroupNames = [
+    "Extremely cold",
+    "Very cold",
+    "Cold",
+    "Quite cold",
+    "Quite cold",
+    "Warm",
+    "Very warm",
+    "Hot",
+    "Very hot",
+    "Extremely hot",
+];
+
+function generateTemperatureGroups(
+    minTemp: number,
+    maxTemp: number,
+    step: number
+) {
+    const groups: TemperatureGroups[] = new Array(
+        (maxTemp - minTemp) / step + 2
+    ).fill(0);
+
+    return groups.map((_, i) => {
+        return {
+            minValue:
+                i === 0 ? Number.MIN_SAFE_INTEGER : minTemp + (i - 1) * step,
+            maxValue:
+                i === groups.length - 1
+                    ? Number.MAX_SAFE_INTEGER
+                    : minTemp + i * step,
+            name: temperatureGroupNames[i],
+        };
+    });
+}
+
+export const temperatureGroups = generateTemperatureGroups(-10, 30, 5);
+
+export const pm25Groups = [
+    [0, 13],
+    [13, 35],
+    [35, 55],
+    [55, 75],
+    [75, 110],
+    [110, Number.MAX_SAFE_INTEGER],
+];
+
+export const pm10Groups = [
+    [0, 20],
+    [20, 50],
+    [50, 80],
+    [80, 110],
+    [110, 150],
+    [150, Number.MAX_SAFE_INTEGER],
+];
 
 export class LuftdatenData {
     public fetchDate: Date;
@@ -102,18 +163,23 @@ export class LuftdatenData {
     };
 
     private static deriveProps(reading: SensorReading) {
+        this.deriveAqi(reading);
+        this.deriveTemperature(reading);
+    }
+
+    private static deriveAqi(reading: SensorReading) {
         let pm25index = 0;
         let pm10index = 0;
 
         if (reading.pm25) {
             const { pm25 } = reading;
 
-            if (pm25 < 13.1) pm25index = 1;
-            else if (pm25 < 35.1) pm25index = 2;
-            else if (pm25 < 55.1) pm25index = 3;
-            else if (pm25 < 75.1) pm25index = 4;
-            else if (pm25 < 110.1) pm25index = 5;
-            else pm25index = 6;
+            for (let i = 0; i < pm25Groups.length; i++) {
+                if (pm25 < pm25Groups[i][1]) {
+                    pm25index = i + 1;
+                    break;
+                }
+            }
 
             reading.aqi25 = pm25index;
         }
@@ -121,16 +187,29 @@ export class LuftdatenData {
         if (reading.pm10) {
             const { pm10 } = reading;
 
-            if (pm10 < 20.1) pm10index = 1;
-            else if (pm10 < 50.1) pm10index = 2;
-            else if (pm10 < 80.1) pm10index = 3;
-            else if (pm10 < 110.1) pm10index = 4;
-            else if (pm10 < 150.1) pm10index = 5;
-            else pm10index = 6;
+            for (let i = 0; i < pm10Groups.length; i++) {
+                if (pm10 < pm10Groups[i][1]) {
+                    pm10index = i + 1;
+                    break;
+                }
+            }
 
             reading.aqi10 = pm10index;
         }
 
         reading.aqi = Math.max(pm25index, pm10index);
+    }
+
+    private static deriveTemperature(reading: SensorReading) {
+        if (!reading.temperature) return;
+
+        for (let i = 0; i < temperatureGroups.length; i++) {
+            if (
+                temperatureGroups[i].minValue < reading.temperature &&
+                reading.temperature < temperatureGroups[i].maxValue
+            ) {
+                reading.temperatureGroup = i + 1;
+            }
+        }
     }
 }

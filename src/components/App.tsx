@@ -14,7 +14,7 @@ import {
     useMediaQuery,
 } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
-import { updateLocationThunk } from "../store/location/thunks";
+import { updateLocationThunk } from "../store/userData/thunks";
 import { fetchPollutionData } from "../store/luftdaten/thunks";
 
 const darkTheme = createMuiTheme({

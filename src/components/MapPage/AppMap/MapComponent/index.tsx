@@ -4,6 +4,8 @@ import HeatmapDataSource from "../../../../models/HeatmapDataSource";
 import Location from "../../../../models/Location";
 import { useTheme } from "@material-ui/core";
 import { MoveEvent } from "..";
+import { useDispatch } from "react-redux";
+import { updateSelectedStation } from "../../../../store/userData/actions";
 
 const breakpointLayers = ["housenum-label", "road-label"];
 
@@ -12,39 +14,43 @@ const Map = ReactMapboxGl({
         "pk.eyJ1IjoidHltb290ZXV1c3oiLCJhIjoiY2tldmw3N3p6MTB1aTJxcDd3ZDIzdnUycyJ9.ZpNCPh7aJsDpg5uzTZIuUQ",
 });
 
+const insertColors = (colors: string[]) => {
+    return colors.map((color, i) => [i + 1, color]).flat();
+};
+
 const aqiColors = [
+    "rgb(114, 213, 40)",
+    "rgb(240, 223, 15)",
+    "rgb(240, 124, 47)",
+    "rgb(239, 42, 54)",
+    "rgb(185, 0, 92)",
+    "rgb(132, 0, 132)",
+];
+
+const aqiColorsMap = [
     "match",
     ["get", "dbh"],
-    1,
-    "rgb(114, 213, 40)",
-    2,
-    "rgb(240, 223, 15)",
-    3,
-    "rgb(240, 124, 47)",
-    4,
-    "rgb(239, 42, 54)",
-    5,
-    "rgb(185, 0, 92)",
-    6,
-    "rgb(132, 0, 132)",
+    ...insertColors(aqiColors),
     "rgba(0, 0, 0, 0)",
 ];
 
 const temperatureColors = [
+    "rgb(0, 192, 248)",
+    "rgb(72, 232, 248)",
+    "rgb(128, 248, 248)",
+    "rgb(48, 208, 0)",
+    "rgb(128, 248, 0)",
+    "rgb(200, 248, 80)",
+    "rgb(248, 248, 0)",
+    "rgb(245, 149, 18)",
+    "rgb(245, 115, 18)",
+    "rgb(224, 30, 30)",
+];
+
+const temperatureColorsMap = [
     "match",
     ["get", "dbh"],
-    1,
-    "rgb(114, 213, 40)",
-    2,
-    "rgb(240, 223, 15)",
-    3,
-    "rgb(240, 124, 47)",
-    4,
-    "rgb(239, 42, 54)",
-    5,
-    "rgb(185, 0, 92)",
-    6,
-    "rgb(132, 0, 132)",
+    ...insertColors(temperatureColors),
     "rgba(0, 0, 0, 0)",
 ];
 
@@ -63,7 +69,8 @@ const MapComponent = ({
     counter,
     dataType,
 }: MapComponentProps) => {
-    const theme = useTheme();
+    const theme = useTheme(),
+        dispatch = useDispatch();
 
     return (
         <Map
@@ -122,8 +129,8 @@ const MapComponent = ({
                                     },
                                     "circle-color":
                                         dataType === "Temperature"
-                                            ? temperatureColors
-                                            : aqiColors,
+                                            ? temperatureColorsMap
+                                            : aqiColorsMap,
                                     "circle-opacity": {
                                         stops: [
                                             [0, 0.5],
@@ -140,8 +147,14 @@ const MapComponent = ({
                             "click",
                             "data-circle" + counter.current,
                             function (e: any) {
-                                // console.log(e.features[0].properties.dbh);
-                                console.log(e.features);
+                                dispatch(
+                                    updateSelectedStation(
+                                        JSON.parse(
+                                            e.features[0].properties
+                                                .sensorReading
+                                        )
+                                    )
+                                );
                             }
                         );
 

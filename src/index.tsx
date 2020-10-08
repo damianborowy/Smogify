@@ -27,7 +27,7 @@ store.subscribe(
     throttle(() => {
         saveState({
             luftdaten: store.getState().luftdaten,
-            location: store.getState().location,
+            userData: store.getState().userData,
             settings: store.getState().settings,
         });
     }, 1000)

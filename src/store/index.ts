@@ -1,11 +1,11 @@
 import { settingsReducer } from "./settings/reducers";
 import { combineReducers } from "redux";
-import { locationReducer } from "./location/reducers";
+import { userDataReducer } from "./userData/reducers";
 import { luftdatenReducer } from "./luftdaten/reducers";
 
 export const rootReducer = combineReducers({
     settings: settingsReducer,
-    location: locationReducer,
+    userData: userDataReducer,
     luftdaten: luftdatenReducer,
 });
 

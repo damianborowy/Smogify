@@ -22,13 +22,12 @@ interface AppMapProps {
 }
 
 const AppMap = ({ dataType }: AppMapProps) => {
-    const locationData = useSelector((state: RootState) => state.location),
+    const locationData = useSelector((state: RootState) => state.userData),
         luftdatenData = useSelector((state: RootState) => state.luftdaten),
         [dataSource, setDataSource] = useState<HeatmapDataSource | null>(null),
         [location, setLocation] = useState(
             new Location(locationData.location.lat, locationData.location.lng)
         ),
-        [selectedStation, setSelectedStation] = useState(),
         counter = useRef(0);
 
     const onMoveCallback = (e: MoveEvent) => {
@@ -52,7 +51,7 @@ const AppMap = ({ dataType }: AppMapProps) => {
                                 dbh = data.aqi10 ?? 0;
                                 break;
                             case "Temperature":
-                                dbh = data.temperature ?? 0;
+                                dbh = data.temperatureGroup ?? 0;
                                 break;
                             case "AQI":
                                 dbh = data.aqi ?? 0;

@@ -6,6 +6,7 @@ import {
     pm25Groups,
     pm10Groups,
     temperatureGroups,
+    SensorReading,
 } from "../../../models/Luftdaten";
 import { Typography, useTheme } from "@material-ui/core";
 import clsx from "clsx";
@@ -59,9 +60,10 @@ const Pointer = ({ index, dataType }: PointerProps) => {
 interface ColorsMeterProps {
     dataType: string;
     bgColor: "default" | "none";
+    reading?: SensorReading;
 }
 
-const ColorsMeter = ({ dataType, bgColor }: ColorsMeterProps) => {
+const ColorsMeter = ({ dataType, bgColor, reading }: ColorsMeterProps) => {
     const theme = useTheme();
 
     const dataTypeColors =

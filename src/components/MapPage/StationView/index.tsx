@@ -1,4 +1,4 @@
-import { Button, IconButton, Paper } from "@material-ui/core";
+import { Button, IconButton, Paper, Typography } from "@material-ui/core";
 import clsx from "clsx";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,7 +42,18 @@ const StationView = ({ dataType }: StationViewProps) => {
                             </IconButton>
                         </div>
                         <div className={styles.readings}>
-                            <ColorsMeter dataType={dataType} bgColor="none" />
+                            <div className={styles.reading}>
+                                <Typography className={styles.readingText}>
+                                    PM 2.5
+                                </Typography>
+                                <ColorsMeter dataType="PM2.5" bgColor="none" />
+                            </div>
+                            <div className={styles.reading}>
+                                <Typography className={styles.readingText}>
+                                    PM 10
+                                </Typography>
+                                <ColorsMeter dataType="PM10" bgColor="none" />
+                            </div>
                         </div>
                         <div className={styles.body}>
                             {expanded && (

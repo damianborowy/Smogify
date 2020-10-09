@@ -17,7 +17,9 @@ const MapPage = () => {
                     <ColorsMeter dataType={dataType} bgColor="default" />
                 </div>
             </div>
-            <StationView dataType={dataType} />
+            <div className={styles.stationView}>
+                <StationView dataType={dataType} />
+            </div>
         </div>
     );
 };

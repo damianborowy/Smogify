@@ -1,6 +1,7 @@
 .base {
     background: #000;
     width: 100%;
+    max-width: 500px;
     transition: 0.5s ease all;
     position: absolute;
     bottom: 0;
@@ -8,7 +9,7 @@
 }
 
 .open {
-    height: 100px;
+    height: 130px;
 }
 
 .expanded {
@@ -29,13 +30,28 @@ div .closed {
 .header {
     display: flex;
     justify-content: right;
+    margin-bottom: 10px;
 }
 
 .readings {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     height: 48px;
+}
+
+.reading {
+    width: 100%;
+    display: flex;
+}
+
+div .readingText {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    width: 50px;
 }
 
 .body {

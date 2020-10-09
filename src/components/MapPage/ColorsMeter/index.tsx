@@ -1,32 +1,135 @@
 import React from "react";
 import styles from "./style.module.scss";
-import { aqiColors, temperatureColors } from "../../../models/Luftdaten";
+import {
+    aqiColors,
+    temperatureColors,
+    pm25Groups,
+    pm10Groups,
+    temperatureGroups,
+} from "../../../models/Luftdaten";
+import { Typography, useTheme } from "@material-ui/core";
+import clsx from "clsx";
 
 interface PointerProps {
-    value: number;
+    index: number;
+    dataType: string;
+    currentValue?: number;
 }
 
-const Pointer = ({ value }: PointerProps) => {};
+const Pointer = ({ index, dataType }: PointerProps) => {
+    const theme = useTheme();
+
+    const getValue = () => {
+        if (dataType === "AQI") return index;
+        else if (dataType === "Temperature") {
+            if (index === 0) return "Min";
+            if (index === temperatureGroups.length) return "Max";
+            else return temperatureGroups[index].minValue;
+        } else {
+            const collection = dataType === "PM2.5" ? pm25Groups : pm10Groups;
+
+            if (index > collection.length - 1) return "Max";
+            else return collection[index][0];
+        }
+    };
+
+    return (
+        <div
+            className={styles.pointer}
+            style={{
+                backgroundColor:
+                    theme.palette.type === "dark" ? "#eee" : "#111",
+            }}
+        >
+            <Typography
+                className={clsx(styles.value, {
+                    [styles.valueAQI]: dataType === "AQI",
+                })}
+                style={{
+                    color:
+                        theme.palette.type === "dark" ? "lightgray" : "black",
+                }}
+            >
+                {getValue()}
+            </Typography>
+        </div>
+    );
+};
 
 interface ColorsMeterProps {
     dataType: string;
+    bgColor: "default" | "none";
 }
 
-const ColorsMeter = ({ dataType }: ColorsMeterProps) => {
+const ColorsMeter = ({ dataType, bgColor }: ColorsMeterProps) => {
+    const theme = useTheme();
+
     const dataTypeColors =
         dataType === "Temperature" ? temperatureColors : aqiColors;
 
-    return (
-        <div className={styles.colorMeter}>
-            {dataTypeColors.map((color) => (
+    const mapColorsToComponents = () => {
+        const colorDivs = dataTypeColors.map((color, i) => (
+            <React.Fragment key={i}>
+                <Pointer index={i} dataType={dataType} />
                 <div
                     className={styles.color}
                     style={{
                         backgroundColor: color,
                         width: `calc(100% / ${dataTypeColors.length})`,
                     }}
-                ></div>
-            ))}
+                />
+            </React.Fragment>
+        ));
+
+        colorDivs.push(
+            <Pointer
+                key={dataTypeColors.length}
+                index={dataTypeColors.length}
+                dataType={dataType}
+            />
+        );
+
+        return colorDivs;
+    };
+
+    const getUnit = () => {
+        switch (dataType) {
+            case "Temperature":
+                return "°C";
+            case "AQI":
+                return "";
+            default:
+                return "μg/m³";
+        }
+    };
+
+    const getBackgroundColor = () => {
+        const color =
+            theme.palette.type === "dark"
+                ? "rgba(80, 80, 80, 0.6)"
+                : "rgba(170, 170, 170, 0.6)";
+
+        return {
+            backgroundColor: bgColor === "default" ? color : "unset",
+        };
+    };
+
+    return (
+        <div className={styles.colorMeter} style={getBackgroundColor()}>
+            <div className={styles.colors}>{mapColorsToComponents()}</div>
+            {dataType !== "AQI" && (
+                <Typography
+                    className={styles.unit}
+                    style={{
+                        color:
+                            theme.palette.type === "dark"
+                                ? "lightgray"
+                                : "black",
+                    }}
+                >
+                    {getUnit()}
+                </Typography>
+            )}
         </div>
     );
 };

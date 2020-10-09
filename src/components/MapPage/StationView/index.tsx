@@ -42,7 +42,7 @@ const StationView = ({ dataType }: StationViewProps) => {
                             </IconButton>
                         </div>
                         <div className={styles.readings}>
-                            <ColorsMeter dataType={dataType} />
+                            <ColorsMeter dataType={dataType} bgColor="none" />
                         </div>
                         <div className={styles.body}>
                             {expanded && (

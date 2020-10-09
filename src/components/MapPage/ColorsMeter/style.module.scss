@@ -1,8 +1,41 @@
 .colorMeter {
     display: flex;
     width: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 8px 12px;
+    box-sizing: border-box;
+}
+
+.colors {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
 }
 
 .color {
     height: 5px;
+}
+
+.pointer {
+    position: relative;
+    height: 9px;
+    width: 1px;
+}
+
+div .value {
+    position: absolute;
+    top: 8px;
+    font-size: 10px;
+}
+
+div .valueAQI {
+    right: -2px;
+}
+
+div .unit {
+    font-size: 13px;
+    margin-left: 11px;
 }

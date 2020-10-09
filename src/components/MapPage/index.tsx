@@ -14,7 +14,7 @@ const MapPage = () => {
             <AppDial dataType={dataType} setDataType={setDataType} />
             <div className={styles.colorMeter}>
                 <div className={styles.colorMeterPositioner}>
-                    <ColorsMeter dataType={dataType} />
+                    <ColorsMeter dataType={dataType} bgColor="default" />
                 </div>
             </div>
             <StationView dataType={dataType} />

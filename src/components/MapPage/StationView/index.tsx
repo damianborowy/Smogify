@@ -1,4 +1,11 @@
-import { Button, IconButton, Paper, Typography } from "@material-ui/core";
+import {
+    Button,
+    IconButton,
+    Paper,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from "@material-ui/core";
 import clsx from "clsx";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,7 +13,7 @@ import { RootState } from "../../../store";
 import { clearSelectedStation } from "../../../store/userData/actions";
 import styles from "./style.module.scss";
 import { Close, ExpandLess, ExpandMore } from "@material-ui/icons";
-import ColorsMeter from "../ColorsMeter";
+import ColorsMeter from "../../Shared/ColorsMeter";
 
 interface StationViewProps {
     dataType: string;
@@ -15,17 +22,27 @@ interface StationViewProps {
 const StationView = ({ dataType }: StationViewProps) => {
     const userData = useSelector((state: RootState) => state.userData),
         [expanded, setExpanded] = useState(false),
-        dispatch = useDispatch();
+        dispatch = useDispatch(),
+        theme = useTheme(),
+        matches = useMediaQuery(theme.breakpoints.up("sm"));
 
     return (
         <div
             className={clsx(styles.base, {
                 [styles.open]: userData.selectedStation,
                 [styles.closed]: !userData.selectedStation,
-                [styles.expanded]: expanded,
+                [styles.expandedSmall]: expanded && !matches,
+                [styles.expanded]: expanded && matches,
+                [styles.borderRadius]: !expanded || (expanded && matches),
             })}
         >
-            <Paper className={styles.container} elevation={0} square>
+            <Paper
+                className={clsx(styles.container, {
+                    [styles.borderRadius]: !expanded || (expanded && matches),
+                })}
+                elevation={0}
+                square
+            >
                 {userData.selectedStation && (
                     <>
                         <div className={styles.header}>

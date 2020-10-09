@@ -7,12 +7,7 @@ import MapPage from "./MapPage";
 import SettingsPage from "./SettingsPage";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import {
-    ThemeProvider,
-    createMuiTheme,
-    useTheme,
-    useMediaQuery,
-} from "@material-ui/core";
+import { ThemeProvider, createMuiTheme, useTheme } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
 import { updateLocationThunk } from "../store/userData/thunks";
 import { fetchPollutionData } from "../store/luftdaten/thunks";
@@ -37,7 +32,6 @@ const lightTheme = createMuiTheme({
 
 const App = () => {
     const settings = useSelector((state: RootState) => state.settings),
-        theme = useTheme(),
         appTheme = settings.darkTheme ? darkTheme : lightTheme,
         dispatch = useDispatch();
 

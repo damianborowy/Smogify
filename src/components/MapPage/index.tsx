@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AppDial from "./AppDial";
 import AppMap from "./AppMap";
-import ColorsMeter from "./ColorsMeter";
+import ColorsMeter from "../Shared/ColorsMeter";
 import StationView from "./StationView";
 import styles from "./style.module.scss";
 

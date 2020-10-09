@@ -12,12 +12,20 @@
     height: 130px;
 }
 
-.expanded {
+.expandedSmall {
     height: 100%;
+}
+
+.expanded {
+    height: 500px;
 }
 
 div .closed {
     height: 0;
+}
+
+.borderRadius {
+    border-radius: 8px 8px 0 0;
 }
 
 .container {

@@ -33,6 +33,28 @@ export class SensorReading {
     ) {}
 }
 
+export const aqiColors = [
+    "rgb(114, 213, 40)",
+    "rgb(240, 223, 15)",
+    "rgb(240, 124, 47)",
+    "rgb(239, 42, 54)",
+    "rgb(185, 0, 92)",
+    "rgb(132, 0, 132)",
+];
+
+export const temperatureColors = [
+    "rgb(0, 192, 248)",
+    "rgb(72, 232, 248)",
+    "rgb(128, 248, 248)",
+    "rgb(48, 208, 0)",
+    "rgb(128, 248, 0)",
+    "rgb(200, 248, 80)",
+    "rgb(248, 248, 0)",
+    "rgb(245, 149, 18)",
+    "rgb(245, 115, 18)",
+    "rgb(224, 30, 30)",
+];
+
 export const temperatureGroupNames = [
     "Extremely cold",
     "Very cold",

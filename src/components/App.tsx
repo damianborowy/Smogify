@@ -16,6 +16,7 @@ import {
 import { blue } from "@material-ui/core/colors";
 import { updateLocationThunk } from "../store/userData/thunks";
 import { fetchPollutionData } from "../store/luftdaten/thunks";
+import { clearSelectedStation } from "../store/userData/actions";
 
 const darkTheme = createMuiTheme({
     palette: {
@@ -37,11 +38,11 @@ const lightTheme = createMuiTheme({
 const App = () => {
     const settings = useSelector((state: RootState) => state.settings),
         theme = useTheme(),
-        isSmall = useMediaQuery(theme.breakpoints.up("md")),
         appTheme = settings.darkTheme ? darkTheme : lightTheme,
         dispatch = useDispatch();
 
     useEffect(() => {
+        dispatch(clearSelectedStation());
         dispatch(updateLocationThunk());
         dispatch(fetchPollutionData());
     }, [dispatch]);
@@ -49,17 +50,13 @@ const App = () => {
     return (
         <BrowserRouter>
             <ThemeProvider theme={appTheme}>
-                <div
-                    className={
-                        isSmall ? styles.wrapperDrawer : styles.wrapperNavBar
-                    }
-                >
+                <div className={styles.wrapperNavBar}>
                     <div className={styles.page}>
                         <Route exact path="/" component={HomePage} />
                         <Route path="/map" component={MapPage} />
                         <Route path="/settings" component={SettingsPage} />
                     </div>
-                    <Navigation drawerMode={isSmall} />
+                    <Navigation />
                 </div>
             </ThemeProvider>
         </BrowserRouter>

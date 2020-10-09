@@ -6,6 +6,7 @@ import { useTheme } from "@material-ui/core";
 import { MoveEvent } from "..";
 import { useDispatch } from "react-redux";
 import { updateSelectedStation } from "../../../../store/userData/actions";
+import { aqiColors, temperatureColors } from "../../../../models/Luftdaten";
 
 const breakpointLayers = ["housenum-label", "road-label"];
 
@@ -18,33 +19,13 @@ const insertColors = (colors: string[]) => {
     return colors.map((color, i) => [i + 1, color]).flat();
 };
 
-const aqiColors = [
-    "rgb(114, 213, 40)",
-    "rgb(240, 223, 15)",
-    "rgb(240, 124, 47)",
-    "rgb(239, 42, 54)",
-    "rgb(185, 0, 92)",
-    "rgb(132, 0, 132)",
-];
+
 
 const aqiColorsMap = [
     "match",
     ["get", "dbh"],
     ...insertColors(aqiColors),
     "rgba(0, 0, 0, 0)",
-];
-
-const temperatureColors = [
-    "rgb(0, 192, 248)",
-    "rgb(72, 232, 248)",
-    "rgb(128, 248, 248)",
-    "rgb(48, 208, 0)",
-    "rgb(128, 248, 0)",
-    "rgb(200, 248, 80)",
-    "rgb(248, 248, 0)",
-    "rgb(245, 149, 18)",
-    "rgb(245, 115, 18)",
-    "rgb(224, 30, 30)",
 ];
 
 const temperatureColorsMap = [
@@ -146,7 +127,7 @@ const MapComponent = ({
                         map.on(
                             "click",
                             "data-circle" + counter.current,
-                            function (e: any) {
+                            (e: any) => {
                                 dispatch(
                                     updateSelectedStation(
                                         JSON.parse(
@@ -155,6 +136,22 @@ const MapComponent = ({
                                         )
                                     )
                                 );
+                            }
+                        );
+
+                        map.on(
+                            "mousemove",
+                            "data-circle" + counter.current,
+                            (e: any) => {
+                                map.getCanvas().style.cursor = "pointer";
+                            }
+                        );
+
+                        map.on(
+                            "mouseleave",
+                            "data-circle" + counter.current,
+                            (e: any) => {
+                                map.getCanvas().style.cursor = "";
                             }
                         );
 

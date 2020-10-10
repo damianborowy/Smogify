@@ -27,18 +27,42 @@ export type OpenWeatherMapResponse = {
     };
 };
 
+export type WeatherReading = {
+    temp: number;
+    feelsLike: number;
+    pressure: number;
+    humidity: number;
+    windSpeed: number;
+    windDeg: number;
+    probOfPrecipation: number;
+
+    weather: string;
+};
+
 export class OpenWeatherMapData {
-    private constructor(
-        public temp: number,
-        public feelsLike: number,
-        public pressure: number,
-        public humidity: number,
-        public windSpeed: number,
-        public windDeg: number,
-        public probOfPrecipation: number,
-        public location: Location,
-        public city: string,
-        public sunrise: number,
-        public sunset: number
-    ) {}
+    public weatherReadings: WeatherReading[];
+    public location: Location;
+    public city: string;
+    public sunrise: number;
+    public sunset: number;
+
+    constructor(data: OpenWeatherMapResponse, location: Location) {
+        this.city = data.city.name;
+        this.location = location;
+        this.sunrise = data.city.sunrise;
+        this.sunset = data.city.sunset;
+
+        this.weatherReadings = data.list.map((reading) => {
+            return {
+                temp: reading.main.temp,
+                feelsLike: reading.main.feels_like,
+                pressure: reading.main.pressure,
+                humidity: reading.main.humidity,
+                windSpeed: reading.wind.speed,
+                windDeg: reading.wind.deg,
+                probOfPrecipation: reading.pop,
+                weather: reading.weather[0].main,
+            };
+        });
+    }
 }

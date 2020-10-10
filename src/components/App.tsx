@@ -10,8 +10,12 @@ import { RootState } from "../store";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
 import { updateLocationThunk } from "../store/userData/thunks";
-import { fetchPollutionData } from "../store/luftdaten/thunks";
+import {
+    fetchNearbyStationData,
+    fetchPollutionData,
+} from "../store/luftdaten/thunks";
 import { clearSelectedStation } from "../store/userData/actions";
+import { fetchWeatherData } from "../store/weather/thunks";
 
 const darkTheme = createMuiTheme({
     palette: {
@@ -39,6 +43,8 @@ const App = () => {
         dispatch(clearSelectedStation());
         dispatch(updateLocationThunk());
         dispatch(fetchPollutionData());
+        dispatch(fetchNearbyStationData());
+        dispatch(fetchWeatherData());
     }, [dispatch]);
 
     return (

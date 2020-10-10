@@ -3,7 +3,9 @@ import { ThunkAction } from "redux-thunk";
 import { RootState } from "..";
 import { LuftdatenResponse } from "../../models/Luftdaten";
 import { LuftdatenData } from "../../models/Luftdaten";
-import { updatePollutionData } from "./actions";
+import { calculateDistance } from "../../utils/distance";
+import { updateNearblyStationData, updatePollutionData } from "./actions";
+import { store } from "../../index";
 
 export const fetchPollutionData = (): ThunkAction<
     Promise<void>,
@@ -18,4 +20,30 @@ export const fetchPollutionData = (): ThunkAction<
     const pollutionData = LuftdatenData.fromLuftdaten(luftdatenData);
 
     dispatch(updatePollutionData(pollutionData));
+};
+
+export const fetchNearbyStationData = (): ThunkAction<
+    Promise<void>,
+    RootState,
+    unknown,
+    Action<string>
+> => async (dispatch) => {
+    const location = store.getState().userData.location;
+
+    const luftdatenData: LuftdatenResponse[] = await fetch(
+        `https://data.sensor.community/airrohr/v1/filter/area=${location.lat},${location.lng},5`
+    ).then((res) => res.json());
+
+    if (luftdatenData.length > 0) {
+        const pollutionData = LuftdatenData.fromLuftdaten(luftdatenData)
+            .sensorReadings.map((reading) => {
+                return {
+                    distance: calculateDistance(location, reading.location),
+                    data: reading,
+                };
+            })
+            .sort((a, b) => a.distance - b.distance);
+
+        dispatch(updateNearblyStationData(pollutionData[0].data));
+    }
 };

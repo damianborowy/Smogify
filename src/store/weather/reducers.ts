@@ -2,12 +2,10 @@ import {
     LuftdatenState,
     LuftdatenActionTypes,
     UPDATE_POLLUTION_DATA,
-    UPDATE_NEARBY_STATION_DATA,
 } from "./types";
 
 const initialState: LuftdatenState = {
     pollutionData: null,
-    nearbyStationData: null,
 };
 
 export function luftdatenReducer(
@@ -19,11 +17,6 @@ export function luftdatenReducer(
             return {
                 ...state,
                 pollutionData: action.payload,
-            };
-        case UPDATE_NEARBY_STATION_DATA:
-            return {
-                ...state,
-                nearbyStationData: action.payload,
             };
         default:
             return state;

@@ -21,7 +21,11 @@ const middlewares = [thunk];
 // const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const composedEnhancers = composeWithDevTools(applyMiddleware(...middlewares));
 
-const store = createStore(rootReducer, persistedState, composedEnhancers);
+export const store = createStore(
+    rootReducer,
+    persistedState,
+    composedEnhancers
+);
 
 store.subscribe(
     throttle(() => {

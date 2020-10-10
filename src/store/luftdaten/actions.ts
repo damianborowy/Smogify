@@ -1,5 +1,9 @@
-import { LuftdatenData } from "../../models/Luftdaten";
-import { UPDATE_POLLUTION_DATA, LuftdatenActionTypes } from "./types";
+import { LuftdatenData, SensorReading } from "../../models/Luftdaten";
+import {
+    UPDATE_POLLUTION_DATA,
+    LuftdatenActionTypes,
+    UPDATE_NEARBY_STATION_DATA,
+} from "./types";
 
 export function updatePollutionData(
     pollutionData: LuftdatenData
@@ -7,5 +11,14 @@ export function updatePollutionData(
     return {
         type: UPDATE_POLLUTION_DATA,
         payload: pollutionData,
+    };
+}
+
+export function updateNearblyStationData(
+    reading: SensorReading
+): LuftdatenActionTypes {
+    return {
+        type: UPDATE_NEARBY_STATION_DATA,
+        payload: reading,
     };
 }

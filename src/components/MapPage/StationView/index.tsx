@@ -63,13 +63,21 @@ const StationView = ({ dataType }: StationViewProps) => {
                                 <Typography className={styles.readingText}>
                                     PM 2.5
                                 </Typography>
-                                <ColorsMeter dataType="PM2.5" bgColor="none" />
+                                <ColorsMeter
+                                    reading={userData.selectedStation}
+                                    dataType="PM2.5"
+                                    bgColor="none"
+                                />
                             </div>
                             <div className={styles.reading}>
                                 <Typography className={styles.readingText}>
                                     PM 10
                                 </Typography>
-                                <ColorsMeter dataType="PM10" bgColor="none" />
+                                <ColorsMeter
+                                    reading={userData.selectedStation}
+                                    dataType="PM10"
+                                    bgColor="none"
+                                />
                             </div>
                         </div>
                         <div className={styles.body}>

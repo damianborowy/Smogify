@@ -99,7 +99,7 @@ const ColorsMeter = ({ dataType, bgColor, reading }: ColorsMeterProps) => {
             case "Temperature":
                 return "°C";
             case "AQI":
-                return "";
+                return "AQI";
             default:
                 return "μg/m³";
         }
@@ -116,23 +116,48 @@ const ColorsMeter = ({ dataType, bgColor, reading }: ColorsMeterProps) => {
         };
     };
 
+    const isDataPresent = () => {
+        if (!reading) return true;
+
+        console.log(reading);
+
+        switch (dataType) {
+            case "PM2.5":
+                return typeof reading.aqi25 === "number";
+            case "PM10":
+                return typeof reading.aqi10 === "number";
+            case "Temperature":
+                return typeof reading.temperatureGroup === "number";
+            default:
+                return false;
+        }
+    };
+
     return (
-        <div className={styles.colorMeter} style={getBackgroundColor()}>
-            <div className={styles.colors}>{mapColorsToComponents()}</div>
-            {dataType !== "AQI" && (
-                <Typography
-                    className={styles.unit}
-                    style={{
-                        color:
-                            theme.palette.type === "dark"
-                                ? "lightgray"
-                                : "black",
-                    }}
-                >
-                    {getUnit()}
-                </Typography>
+        <>
+            {isDataPresent() ? (
+                <div className={styles.colorMeter} style={getBackgroundColor()}>
+                    <div className={styles.colors}>
+                        {mapColorsToComponents()}
+                    </div>
+                    <Typography
+                        className={styles.unit}
+                        style={{
+                            color:
+                                theme.palette.type === "dark"
+                                    ? "lightgray"
+                                    : "black",
+                        }}
+                    >
+                        {getUnit()}
+                    </Typography>
+                </div>
+            ) : (
+                <div className={styles.noData}>
+                    <Typography>NO DATA</Typography>
+                </div>
             )}
-        </div>
+        </>
     );
 };
 

@@ -7,7 +7,7 @@ import MapPage from "./MapPage";
 import SettingsPage from "./SettingsPage";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { ThemeProvider, createMuiTheme, useTheme } from "@material-ui/core";
+import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
 import { updateLocationThunk } from "../store/userData/thunks";
 import { fetchPollutionData } from "../store/luftdaten/thunks";

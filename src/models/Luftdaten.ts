@@ -5,7 +5,7 @@ export type SensorDataValues = {
     value_type: string;
 };
 
-export type FetchedLuftdatenData = {
+export type LuftdatenResponse = {
     location: {
         latitude: number;
         longitude: number;
@@ -119,7 +119,7 @@ export class LuftdatenData {
         this.sensorReadings = sensorReadings;
     }
 
-    public static fromLuftdaten(luftdatenData: FetchedLuftdatenData[]) {
+    public static fromLuftdaten(luftdatenData: LuftdatenResponse[]) {
         const sensorReadings = luftdatenData.map((data) => {
             const sensorReading = new SensorReading(
                 new Location(data.location.latitude, data.location.longitude)

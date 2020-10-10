@@ -33,6 +33,7 @@ store.subscribe(
             luftdaten: store.getState().luftdaten,
             userData: store.getState().userData,
             settings: store.getState().settings,
+            weather: store.getState().weather,
         });
     }, 1000)
 );

@@ -22,11 +22,11 @@ interface AppMapProps {
 }
 
 const AppMap = ({ dataType }: AppMapProps) => {
-    const locationData = useSelector((state: RootState) => state.userData),
+    const userData = useSelector((state: RootState) => state.userData),
         luftdatenData = useSelector((state: RootState) => state.luftdaten),
         [dataSource, setDataSource] = useState<HeatmapDataSource | null>(null),
         [location, setLocation] = useState(
-            new Location(locationData.location.lat, locationData.location.lng)
+            new Location(userData.location.lat, userData.location.lng)
         ),
         counter = useRef(0);
 

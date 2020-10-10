@@ -1,22 +1,36 @@
 import {
-    LuftdatenState,
-    LuftdatenActionTypes,
-    UPDATE_POLLUTION_DATA,
+    WeatherState,
+    WeatherActionTypes,
+    UPDATE_NEARBY_WEATHER,
+    UPDATE_SELECTED_WEATHER,
+    UPDATE_FAVOURITE_WEATHER,
 } from "./types";
 
-const initialState: LuftdatenState = {
-    pollutionData: null,
+const initialState: WeatherState = {
+    nearbyWeather: null,
+    selectedWeather: null,
+    favouriteWeather: [],
 };
 
-export function luftdatenReducer(
+export function weatherReducer(
     state = initialState,
-    action: LuftdatenActionTypes
-): LuftdatenState {
+    action: WeatherActionTypes
+): WeatherState {
     switch (action.type) {
-        case UPDATE_POLLUTION_DATA:
+        case UPDATE_NEARBY_WEATHER:
             return {
                 ...state,
-                pollutionData: action.payload,
+                nearbyWeather: action.payload,
+            };
+        case UPDATE_SELECTED_WEATHER:
+            return {
+                ...state,
+                selectedWeather: action.payload,
+            };
+        case UPDATE_FAVOURITE_WEATHER:
+            return {
+                ...state,
+                favouriteWeather: action.payload,
             };
         default:
             return state;

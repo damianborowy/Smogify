@@ -1,14 +1,31 @@
-import { LuftdatenData } from "../../models/Luftdaten";
+import { OpenWeatherMapData } from "../../models/OpenWeatherMap";
 
-export const UPDATE_POLLUTION_DATA = "UPDATE_POLLUTION_DATA";
+export const UPDATE_NEARBY_WEATHER = "UPDATE_NEARBY_WEATHER";
+export const UPDATE_SELECTED_WEATHER = "UPDATE_SELECTED_WEATHER";
+export const UPDATE_FAVOURITE_WEATHER = "UPDATE_FAVOURITE_WEATHER";
 
-interface UpdatePollutionData {
-    type: typeof UPDATE_POLLUTION_DATA;
-    payload: LuftdatenData;
+interface UpdateNearbyWeather {
+    type: typeof UPDATE_NEARBY_WEATHER;
+    payload: OpenWeatherMapData;
 }
 
-export interface LuftdatenState {
-    pollutionData: LuftdatenData | null;
+interface UpdateSelectedWeather {
+    type: typeof UPDATE_SELECTED_WEATHER;
+    payload: OpenWeatherMapData;
 }
 
-export type LuftdatenActionTypes = UpdatePollutionData;
+interface UpdateFavouriteWeather {
+    type: typeof UPDATE_FAVOURITE_WEATHER;
+    payload: OpenWeatherMapData[];
+}
+
+export interface WeatherState {
+    nearbyWeather: OpenWeatherMapData | null;
+    selectedWeather: OpenWeatherMapData | null;
+    favouriteWeather: OpenWeatherMapData[];
+}
+
+export type WeatherActionTypes =
+    | UpdateNearbyWeather
+    | UpdateSelectedWeather
+    | UpdateFavouriteWeather;

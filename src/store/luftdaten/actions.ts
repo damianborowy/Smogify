@@ -3,6 +3,7 @@ import {
     UPDATE_POLLUTION_DATA,
     LuftdatenActionTypes,
     UPDATE_NEARBY_STATION_DATA,
+    UPDATE_FAVOURITE_STATION_DATA,
 } from "./types";
 
 export function updatePollutionData(
@@ -20,5 +21,14 @@ export function updateNearblyStationData(
     return {
         type: UPDATE_NEARBY_STATION_DATA,
         payload: reading,
+    };
+}
+
+export function updateFavouriteStationData(
+    readings: SensorReading[]
+): LuftdatenActionTypes {
+    return {
+        type: UPDATE_FAVOURITE_STATION_DATA,
+        payload: readings,
     };
 }

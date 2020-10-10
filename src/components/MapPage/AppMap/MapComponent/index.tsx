@@ -6,7 +6,12 @@ import { useTheme } from "@material-ui/core";
 import { MoveEvent } from "..";
 import { useDispatch } from "react-redux";
 import { updateSelectedStation } from "../../../../store/userData/actions";
-import { aqiColors, temperatureColors } from "../../../../models/Luftdaten";
+import {
+    aqiColors,
+    SensorReading,
+    temperatureColors,
+} from "../../../../models/Luftdaten";
+import { fetchWeatherData } from "../../../../store/weather/thunks";
 
 const breakpointLayers = ["housenum-label", "road-label"];
 
@@ -18,8 +23,6 @@ const Map = ReactMapboxGl({
 const insertColors = (colors: string[]) => {
     return colors.map((color, i) => [i + 1, color]).flat();
 };
-
-
 
 const aqiColorsMap = [
     "match",
@@ -128,14 +131,12 @@ const MapComponent = ({
                             "click",
                             "data-circle" + counter.current,
                             (e: any) => {
-                                dispatch(
-                                    updateSelectedStation(
-                                        JSON.parse(
-                                            e.features[0].properties
-                                                .sensorReading
-                                        )
-                                    )
+                                const reading: SensorReading = JSON.parse(
+                                    e.features[0].properties.sensorReading
                                 );
+
+                                dispatch(updateSelectedStation(reading));
+                                dispatch(fetchWeatherData(reading.location));
                             }
                         );
 

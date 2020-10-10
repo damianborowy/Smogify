@@ -3,11 +3,13 @@ import {
     LuftdatenActionTypes,
     UPDATE_POLLUTION_DATA,
     UPDATE_NEARBY_STATION_DATA,
+    UPDATE_FAVOURITE_STATION_DATA,
 } from "./types";
 
 const initialState: LuftdatenState = {
     pollutionData: null,
     nearbyStationData: null,
+    favouriteStationsData: [],
 };
 
 export function luftdatenReducer(
@@ -24,6 +26,11 @@ export function luftdatenReducer(
             return {
                 ...state,
                 nearbyStationData: action.payload,
+            };
+        case UPDATE_FAVOURITE_STATION_DATA:
+            return {
+                ...state,
+                favouriteStationsData: action.payload,
             };
         default:
             return state;

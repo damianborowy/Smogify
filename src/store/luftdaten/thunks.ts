@@ -1,10 +1,14 @@
 import { Action } from "redux";
 import { ThunkAction } from "redux-thunk";
 import { RootState } from "..";
-import { LuftdatenResponse } from "../../models/Luftdaten";
+import { LuftdatenResponse, SensorReading } from "../../models/Luftdaten";
 import { LuftdatenData } from "../../models/Luftdaten";
 import { calculateDistance } from "../../utils/distance";
-import { updateNearblyStationData, updatePollutionData } from "./actions";
+import {
+    updateFavouriteStationData,
+    updateNearblyStationData,
+    updatePollutionData,
+} from "./actions";
 import { store } from "../../index";
 
 export const fetchPollutionData = (): ThunkAction<
@@ -18,8 +22,13 @@ export const fetchPollutionData = (): ThunkAction<
     ).then((res) => res.json());
 
     const pollutionData = LuftdatenData.fromLuftdaten(luftdatenData);
-
     dispatch(updatePollutionData(pollutionData));
+
+    const favouriteLocations = store.getState().userData.favouriteStations;
+
+    const favouriteStationsData: SensorReading[] = [];
+
+    dispatch(updateFavouriteStationData(favouriteStationsData));
 };
 
 export const fetchNearbyStationData = (): ThunkAction<

@@ -26,7 +26,6 @@ const AppDial = ({ dataType, setDataType }: AppDialProps) => {
     const [isDialOpen, setIsDialOpen] = useState(false),
         theme = useTheme();
 
-    console.log(theme);
 
     const handleDialOpen = () => setIsDialOpen(true);
     const handleDialClose = () => setIsDialOpen(false);

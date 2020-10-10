@@ -119,7 +119,6 @@ const ColorsMeter = ({ dataType, bgColor, reading }: ColorsMeterProps) => {
     const isDataPresent = () => {
         if (!reading) return true;
 
-        console.log(reading);
 
         switch (dataType) {
             case "PM2.5":

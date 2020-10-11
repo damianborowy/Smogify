@@ -11,13 +11,31 @@ import {
 import { Typography, useTheme } from "@material-ui/core";
 import clsx from "clsx";
 
+interface CurrentValuePointerProps {
+    value: number;
+}
+
+const CurrentValuePointer = ({ value }: CurrentValuePointerProps) => {
+    const calculateLeft = () => {
+        return "50%";
+    };
+
+    return (
+        <div
+            className={styles.currentValuePointer}
+            style={{ left: calculateLeft() }}
+        >
+            <Typography className={styles.currentValue}>{value}</Typography>
+        </div>
+    );
+};
+
 interface PointerProps {
     index: number;
     dataType: string;
-    currentValue?: number;
 }
 
-const Pointer = ({ index, dataType, currentValue }: PointerProps) => {
+const Pointer = ({ index, dataType }: PointerProps) => {
     const theme = useTheme();
 
     const getValue = () => {
@@ -70,10 +88,9 @@ const ColorsMeter = ({
     reading,
     showType,
 }: ColorsMeterProps) => {
-    const theme = useTheme();
-
-    const dataTypeColors =
-        dataType === "Temperature" ? temperatureColors : aqiColors;
+    const theme = useTheme(),
+        dataTypeColors =
+            dataType === "Temperature" ? temperatureColors : aqiColors;
 
     const mapColorsToComponents = () => {
         const colorDivs = dataTypeColors.map((color, i) => (

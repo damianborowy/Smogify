@@ -25,6 +25,7 @@
 
 .color {
     height: 5px;
+    position: relative;
 }
 
 .pointer {
@@ -60,4 +61,18 @@ div .readingText {
     display: flex;
     align-items: center;
     width: 50px;
+}
+
+div .currentValue {
+    position: absolute;
+    top: -8px;
+    font-size: 10px;
+    left: 3px;
+}
+
+div .currentValuePointer {
+    position: absolute;
+    top: -3px;
+    height: 11px;
+    width: 2px;
 }

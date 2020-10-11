@@ -37,7 +37,10 @@ const HomePage = () => {
                         />
                     </>
                 ) : (
-                    "There seem to be no air pollution measuring station close to you. Try adding some to favourites!"
+                    <Typography>
+                        There seem to be no air pollution measuring station
+                        close to you. Try adding some to favourites!
+                    </Typography>
                 )}
 
                 <WeatherInfo weather={weather.nearbyWeather} />
@@ -46,31 +49,33 @@ const HomePage = () => {
                 Favourite stations
             </Typography>
             <div className={styles.favourites}>
-                {userData.favouriteStations.length > 0
-                    ? userData.favouriteStations.map((_, i) => (
-                          <Paper className={clsx(styles.composedInfo)} key={i}>
-                              <Typography>
-                                  {weather.favouriteWeather[i] &&
-                                      weather.favouriteWeather[i].city}
-                              </Typography>
-                              <ColorsMeter
-                                  dataType="PM2.5"
-                                  bgColor="none"
-                                  reading={luftdaten.favouriteStationsData[i]}
-                                  showType
-                              />
-                              <ColorsMeter
-                                  dataType="PM10"
-                                  bgColor="none"
-                                  reading={luftdaten.favouriteStationsData[i]}
-                                  showType
-                              />
-                              <WeatherInfo
-                                  weather={weather.favouriteWeather[i]}
-                              />
-                          </Paper>
-                      ))
-                    : "Add some stations first"}
+                {userData.favouriteStations.length > 0 ? (
+                    userData.favouriteStations.map((_, i) => (
+                        <Paper className={clsx(styles.composedInfo)} key={i}>
+                            <Typography>
+                                {weather.favouriteWeather[i] &&
+                                    weather.favouriteWeather[i].city}
+                            </Typography>
+                            <ColorsMeter
+                                dataType="PM2.5"
+                                bgColor="none"
+                                reading={luftdaten.favouriteStationsData[i]}
+                                showType
+                            />
+                            <ColorsMeter
+                                dataType="PM10"
+                                bgColor="none"
+                                reading={luftdaten.favouriteStationsData[i]}
+                                showType
+                            />
+                            <WeatherInfo
+                                weather={weather.favouriteWeather[i]}
+                            />
+                        </Paper>
+                    ))
+                ) : (
+                    <Typography>You don't have any favourite stations yet. Add them from Map view.</Typography>
+                )}
             </div>
         </Paper>
     );

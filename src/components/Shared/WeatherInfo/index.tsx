@@ -41,7 +41,10 @@ const WeatherInfo = ({ weather }: WeatherInfoProps) => {
                                 src={`${process.env.PUBLIC_URL}/icons/wi-humidity.svg`}
                                 alt=""
                             />
-                            <Typography>{`${weather.weatherReadings[0].probOfPrecipation}%`}</Typography>
+                            <Typography>{`${(
+                                weather.weatherReadings[0].probOfPrecipation *
+                                100
+                            ).toFixed(0)}%`}</Typography>
                         </div>
                     </div>
                 </>

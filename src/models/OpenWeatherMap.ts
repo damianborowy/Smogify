@@ -10,6 +10,7 @@ export type OpenWeatherMapResponse = {
         };
         weather: {
             main: string;
+            icon: string;
         }[];
         wind: {
             speed: number;
@@ -35,8 +36,8 @@ export type WeatherReading = {
     windSpeed: number;
     windDeg: number;
     probOfPrecipation: number;
-
     weather: string;
+    icon: string;
 };
 
 export class OpenWeatherMapData {
@@ -54,6 +55,7 @@ export class OpenWeatherMapData {
 
         this.weatherReadings = data.list.map((reading) => {
             return {
+                icon: reading.weather[0].icon,
                 temp: reading.main.temp,
                 feelsLike: reading.main.feels_like,
                 pressure: reading.main.pressure,

@@ -44,6 +44,15 @@ export const fetchNearbyStationData = (): ThunkType => async (dispatch) => {
             })
             .sort((a, b) => a.distance - b.distance);
 
-        dispatch(updateNearblyStationData(pollutionData[0].data));
+        let bestStation = null;
+
+        for (let reading of pollutionData) {
+            if (reading.data.pm10 || reading.data.pm25) {
+                bestStation = reading.data;
+                break;
+            }
+        }
+
+        dispatch(updateNearblyStationData(bestStation));
     }
 };

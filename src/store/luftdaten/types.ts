@@ -11,7 +11,7 @@ interface UpdatePollutionData {
 
 interface UpdateNearbyStationData {
     type: typeof UPDATE_NEARBY_STATION_DATA;
-    payload: SensorReading;
+    payload: SensorReading | null;
 }
 
 interface UpdateFavouriteStationData {

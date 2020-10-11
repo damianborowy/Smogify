@@ -13,14 +13,15 @@ const HomePage = () => {
 
     return (
         <Paper className={styles.container} elevation={0} square>
-            <div>
+            <Typography variant="h6" style={{ marginBottom: 10 }}>
+                Your location
+            </Typography>
+            <Paper className={styles.composedInfo}>
+                <Typography>
+                    {weather.nearbyWeather && weather.nearbyWeather.city}
+                </Typography>
                 {luftdaten.nearbyStationData ? (
                     <>
-                        <Typography>
-                            Your location:{" "}
-                            {weather.nearbyWeather &&
-                                weather.nearbyWeather.city}
-                        </Typography>
                         <ColorsMeter
                             dataType="PM2.5"
                             bgColor="none"
@@ -39,11 +40,13 @@ const HomePage = () => {
                 )}
 
                 <WeatherInfo weather={weather.nearbyWeather} />
-            </div>
-            <div>
-                <Typography>Favourite stations</Typography>
+            </Paper>
+            <div className={styles.favourites}>
+                <Typography variant="h6" style={{ marginBottom: 10 }}>
+                    Favourite stations
+                </Typography>
                 {userData.favouriteStations.map((_, i) => (
-                    <div>
+                    <Paper className={styles.composedInfo} key={i}>
                         <Typography>
                             {weather.favouriteWeather[i] &&
                                 weather.favouriteWeather[i].city}
@@ -61,7 +64,7 @@ const HomePage = () => {
                             showType
                         />
                         <WeatherInfo weather={weather.favouriteWeather[i]} />
-                    </div>
+                    </Paper>
                 ))}
             </div>
         </Paper>

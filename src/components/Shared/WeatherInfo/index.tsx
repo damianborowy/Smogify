@@ -1,4 +1,3 @@
-import { Paper } from "@material-ui/core";
 import React from "react";
 import { OpenWeatherMapData } from "../../../models/OpenWeatherMap";
 import styles from "./style.module.scss";
@@ -9,11 +8,39 @@ interface WeatherInfoProps {
 
 const WeatherInfo = ({ weather }: WeatherInfoProps) => {
     return (
-        <div>
-            <Paper className={styles.container}>
-                <p>{weather && weather.location.lat}</p>
-                <p>Foo</p>
-            </Paper>
+        <div className={styles.container}>
+            {weather ? (
+                <>
+                    <div className={styles.row}>
+                        <div className={styles.temperature}>
+                            {weather.weatherReadings[0].temp}{" "}
+                            {weather.weatherReadings[0].feelsLike}
+                        </div>
+                        <div className={styles.item}>
+                            {weather.weatherReadings[0].weather}
+                        </div>
+                    </div>
+                    <div className={styles.row}>
+                        <div className={styles.item}>
+                            {weather.weatherReadings[0].humidity}
+                        </div>
+                        <div className={styles.item}>
+                            {weather.weatherReadings[0].pressure}
+                        </div>
+                        <div className={styles.item}>
+                            {weather.weatherReadings[0].windDeg}
+                        </div>
+                    </div>
+                    <div className={styles.row}>
+                        <div className={styles.item}>
+                            {weather.weatherReadings[0].probOfPrecipation}
+                        </div>
+                        <div>FORECAST</div>
+                    </div>
+                </>
+            ) : (
+                "Fetching..."
+            )}
         </div>
     );
 };

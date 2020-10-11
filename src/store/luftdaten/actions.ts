@@ -16,7 +16,7 @@ export function updatePollutionData(
 }
 
 export function updateNearblyStationData(
-    reading: SensorReading
+    reading: SensorReading | null
 ): LuftdatenActionTypes {
     return {
         type: UPDATE_NEARBY_STATION_DATA,

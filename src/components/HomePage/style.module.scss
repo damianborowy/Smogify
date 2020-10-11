@@ -6,11 +6,19 @@
 
 .composedInfo {
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
     padding: 8px;
     box-sizing: border-box;
 }
 
 .favourites {
-    margin-top: 20px;
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 500px));
+    grid-gap: 15px;
+}
+
+.favouriteInfo {
+    height: 100%;
+    margin: 15px 15px 15px 0;
 }

@@ -1,4 +1,5 @@
 import { Paper, Typography } from "@material-ui/core";
+import clsx from "clsx";
 import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -41,13 +42,13 @@ const HomePage = () => {
 
                 <WeatherInfo weather={weather.nearbyWeather} />
             </Paper>
+            <Typography variant="h6" style={{ marginTop: 30 }}>
+                Favourite stations
+            </Typography>
             <div className={styles.favourites}>
-                <Typography variant="h6" style={{ marginBottom: 10 }}>
-                    Favourite stations
-                </Typography>
                 {userData.favouriteStations.length > 0
                     ? userData.favouriteStations.map((_, i) => (
-                          <Paper className={styles.composedInfo} key={i}>
+                          <Paper className={clsx(styles.composedInfo)} key={i}>
                               <Typography>
                                   {weather.favouriteWeather[i] &&
                                       weather.favouriteWeather[i].city}

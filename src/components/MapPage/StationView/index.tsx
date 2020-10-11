@@ -1,11 +1,6 @@
-import {
-    IconButton,
-    Paper,
-    useMediaQuery,
-    useTheme,
-} from "@material-ui/core";
+import { IconButton, Paper } from "@material-ui/core";
 import clsx from "clsx";
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import {
@@ -13,13 +8,7 @@ import {
     updateFavouriteStations,
 } from "../../../store/userData/actions";
 import styles from "./style.module.scss";
-import {
-    Close,
-    ExpandLess,
-    ExpandMore,
-    FavoriteBorder,
-    Favorite,
-} from "@material-ui/icons";
+import { Close, FavoriteBorder, Favorite } from "@material-ui/icons";
 import ColorsMeter from "../../Shared/ColorsMeter";
 import _ from "lodash";
 import { updateFavouriteStationData } from "../../../store/luftdaten/actions";
@@ -30,10 +19,7 @@ import WeatherInfo from "../../Shared/WeatherInfo";
 const StationView = () => {
     const userData = useSelector((state: RootState) => state.userData),
         weather = useSelector((state: RootState) => state.weather),
-        [expanded, setExpanded] = useState(false),
-        dispatch = useDispatch(),
-        theme = useTheme(),
-        matches = useMediaQuery(theme.breakpoints.up("sm"));
+        dispatch = useDispatch();
 
     const isStationFavourite = () => {
         for (let location of userData.favouriteStations)
@@ -68,18 +54,9 @@ const StationView = () => {
             className={clsx(styles.base, {
                 [styles.open]: userData.selectedStation,
                 [styles.closed]: !userData.selectedStation,
-                [styles.expandedSmall]: expanded && !matches,
-                [styles.expanded]: expanded && matches,
-                [styles.borderRadius]: !expanded || (expanded && matches),
             })}
         >
-            <Paper
-                className={clsx(styles.container, {
-                    [styles.borderRadius]: !expanded || (expanded && matches),
-                })}
-                elevation={0}
-                square
-            >
+            <Paper className={styles.container} elevation={0} square>
                 {userData.selectedStation && (
                     <>
                         <div className={styles.header}>
@@ -90,14 +67,8 @@ const StationView = () => {
                                     <FavoriteBorder />
                                 )}
                             </IconButton>
-                            <IconButton onClick={() => setExpanded(!expanded)}>
-                                {expanded ? <ExpandMore /> : <ExpandLess />}
-                            </IconButton>
                             <IconButton
-                                onClick={() => {
-                                    dispatch(clearSelectedStation());
-                                    setExpanded(false);
-                                }}
+                                onClick={() => dispatch(clearSelectedStation())}
                             >
                                 <Close />
                             </IconButton>
@@ -121,11 +92,7 @@ const StationView = () => {
                             </div>
                         </div>
                         <div className={styles.body}>
-                            {expanded && (
-                                <WeatherInfo
-                                    weather={weather.selectedWeather}
-                                />
-                            )}
+                            <WeatherInfo weather={weather.selectedWeather} />
                         </div>
                     </>
                 )}

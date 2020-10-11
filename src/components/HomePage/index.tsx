@@ -45,27 +45,31 @@ const HomePage = () => {
                 <Typography variant="h6" style={{ marginBottom: 10 }}>
                     Favourite stations
                 </Typography>
-                {userData.favouriteStations.map((_, i) => (
-                    <Paper className={styles.composedInfo} key={i}>
-                        <Typography>
-                            {weather.favouriteWeather[i] &&
-                                weather.favouriteWeather[i].city}
-                        </Typography>
-                        <ColorsMeter
-                            dataType="PM2.5"
-                            bgColor="none"
-                            reading={luftdaten.favouriteStationsData[i]}
-                            showType
-                        />
-                        <ColorsMeter
-                            dataType="PM10"
-                            bgColor="none"
-                            reading={luftdaten.favouriteStationsData[i]}
-                            showType
-                        />
-                        <WeatherInfo weather={weather.favouriteWeather[i]} />
-                    </Paper>
-                ))}
+                {userData.favouriteStations.length > 0
+                    ? userData.favouriteStations.map((_, i) => (
+                          <Paper className={styles.composedInfo} key={i}>
+                              <Typography>
+                                  {weather.favouriteWeather[i] &&
+                                      weather.favouriteWeather[i].city}
+                              </Typography>
+                              <ColorsMeter
+                                  dataType="PM2.5"
+                                  bgColor="none"
+                                  reading={luftdaten.favouriteStationsData[i]}
+                                  showType
+                              />
+                              <ColorsMeter
+                                  dataType="PM10"
+                                  bgColor="none"
+                                  reading={luftdaten.favouriteStationsData[i]}
+                                  showType
+                              />
+                              <WeatherInfo
+                                  weather={weather.favouriteWeather[i]}
+                              />
+                          </Paper>
+                      ))
+                    : "Add some stations first"}
             </div>
         </Paper>
     );

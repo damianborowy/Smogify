@@ -10,6 +10,7 @@ export type OpenWeatherMapResponse = {
         };
         weather: {
             main: string;
+            id: number;
             icon: string;
         }[];
         wind: {
@@ -40,6 +41,23 @@ export type WeatherReading = {
     icon: string;
 };
 
+function getIconFromId(id: number, iconCode: string) {
+    let icon: string;
+
+    if (id < 300) icon = "wi-thunderstorm";
+    else if (id < 400) icon = "wi-showers";
+    else if (id < 600) icon = "wi-rain";
+    else if (id < 700) icon = "wi-snow";
+    else if (id < 800) icon = "wi-fog";
+    else if (id === 800)
+        icon = iconCode === "01d" ? "wi-day-sunny" : "wi-night-clear";
+    else if (id === 801)
+        icon = iconCode === "02d" ? "wi-day-cloudy" : "wi-night-cloudy";
+    else icon = "wi-cloudy";
+
+    return icon;
+}
+
 export class OpenWeatherMapData {
     public weatherReadings: WeatherReading[];
     public location: Location;
@@ -55,7 +73,10 @@ export class OpenWeatherMapData {
 
         this.weatherReadings = data.list.map((reading) => {
             return {
-                icon: reading.weather[0].icon,
+                icon: getIconFromId(
+                    reading.weather[0].id,
+                    reading.weather[0].icon
+                ),
                 temp: reading.main.temp,
                 feelsLike: reading.main.feels_like,
                 pressure: reading.main.pressure,

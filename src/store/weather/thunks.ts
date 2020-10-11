@@ -36,7 +36,7 @@ async function fetchSelected(location: Location, dispatch: DispatchType) {
 
 async function fetchWeather(location: Location) {
     const openWeatherMapData: OpenWeatherMapResponse = await fetch(
-        `http://api.openweathermap.org/data/2.5/forecast?lat=${location.lat}&lon=${location.lng}&appid=85c5219a223ac8fb2bdc72b28f2d8d8b`
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${location.lat}&lon=${location.lng}&appid=85c5219a223ac8fb2bdc72b28f2d8d8b`
     ).then((res) => res.json());
 
     return new OpenWeatherMapData(openWeatherMapData, location);

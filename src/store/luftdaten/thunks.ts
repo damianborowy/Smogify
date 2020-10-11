@@ -1,7 +1,5 @@
-import { Action } from "redux";
-import { ThunkAction } from "redux-thunk";
-import { RootState } from "..";
-import { LuftdatenResponse, SensorReading } from "../../models/Luftdaten";
+import { ThunkType } from "..";
+import { LuftdatenResponse } from "../../models/Luftdaten";
 import { LuftdatenData } from "../../models/Luftdaten";
 import { calculateDistance } from "../../utils/distance";
 import {
@@ -10,13 +8,9 @@ import {
     updatePollutionData,
 } from "./actions";
 import { store } from "../../index";
+import { getFavouriteLocationsData } from "../../utils/favouriteLocations";
 
-export const fetchPollutionData = (): ThunkAction<
-    Promise<void>,
-    RootState,
-    unknown,
-    Action<string>
-> => async (dispatch) => {
+export const fetchPollutionData = (): ThunkType => async (dispatch) => {
     const luftdatenData: LuftdatenResponse[] = await fetch(
         "https://data.sensor.community/static/v1/data.json"
     ).then((res) => res.json());
@@ -25,18 +19,15 @@ export const fetchPollutionData = (): ThunkAction<
     dispatch(updatePollutionData(pollutionData));
 
     const favouriteLocations = store.getState().userData.favouriteStations;
+    const favouriteLocationsData = getFavouriteLocationsData(
+        favouriteLocations,
+        pollutionData
+    );
 
-    const favouriteStationsData: SensorReading[] = [];
-
-    dispatch(updateFavouriteStationData(favouriteStationsData));
+    dispatch(updateFavouriteStationData(favouriteLocationsData));
 };
 
-export const fetchNearbyStationData = (): ThunkAction<
-    Promise<void>,
-    RootState,
-    unknown,
-    Action<string>
-> => async (dispatch) => {
+export const fetchNearbyStationData = (): ThunkType => async (dispatch) => {
     const location = store.getState().userData.location;
 
     const luftdatenData: LuftdatenResponse[] = await fetch(

@@ -1,8 +1,6 @@
 import {
-    Button,
     IconButton,
     Paper,
-    Typography,
     useMediaQuery,
     useTheme,
 } from "@material-ui/core";
@@ -10,21 +8,60 @@ import clsx from "clsx";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { clearSelectedStation } from "../../../store/userData/actions";
+import {
+    clearSelectedStation,
+    updateFavouriteStations,
+} from "../../../store/userData/actions";
 import styles from "./style.module.scss";
-import { Close, ExpandLess, ExpandMore } from "@material-ui/icons";
+import {
+    Close,
+    ExpandLess,
+    ExpandMore,
+    FavoriteBorder,
+    Favorite,
+} from "@material-ui/icons";
 import ColorsMeter from "../../Shared/ColorsMeter";
+import _ from "lodash";
+import { updateFavouriteStationData } from "../../../store/luftdaten/actions";
+import { getFavouriteLocationsData } from "../../../utils/favouriteLocations";
+import { fetchWeatherData } from "../../../store/weather/thunks";
+import WeatherInfo from "../../Shared/WeatherInfo";
 
-interface StationViewProps {
-    dataType: string;
-}
-
-const StationView = ({ dataType }: StationViewProps) => {
+const StationView = () => {
     const userData = useSelector((state: RootState) => state.userData),
+        weather = useSelector((state: RootState) => state.weather),
         [expanded, setExpanded] = useState(false),
         dispatch = useDispatch(),
         theme = useTheme(),
         matches = useMediaQuery(theme.breakpoints.up("sm"));
+
+    const isStationFavourite = () => {
+        for (let location of userData.favouriteStations)
+            if (_.isEqual(location, userData.selectedStation!.location))
+                return true;
+
+        return false;
+    };
+
+    const toggleFavourite = () => {
+        const newFavourites = userData.favouriteStations;
+
+        if (isStationFavourite()) {
+            const removedFavouriteIndex = newFavourites.findIndex((location) =>
+                _.isEqual(location, userData.selectedStation!.location)
+            );
+
+            newFavourites.splice(removedFavouriteIndex, 1);
+        } else {
+            newFavourites.push(userData.selectedStation!.location);
+        }
+
+        dispatch(updateFavouriteStations(newFavourites));
+        dispatch(
+            updateFavouriteStationData(getFavouriteLocationsData(newFavourites))
+        );
+        dispatch(fetchWeatherData());
+    };
 
     return (
         <div
@@ -46,6 +83,13 @@ const StationView = ({ dataType }: StationViewProps) => {
                 {userData.selectedStation && (
                     <>
                         <div className={styles.header}>
+                            <IconButton onClick={toggleFavourite}>
+                                {isStationFavourite() ? (
+                                    <Favorite />
+                                ) : (
+                                    <FavoriteBorder />
+                                )}
+                            </IconButton>
                             <IconButton onClick={() => setExpanded(!expanded)}>
                                 {expanded ? <ExpandMore /> : <ExpandLess />}
                             </IconButton>
@@ -60,117 +104,27 @@ const StationView = ({ dataType }: StationViewProps) => {
                         </div>
                         <div className={styles.readings}>
                             <div className={styles.reading}>
-                                <Typography className={styles.readingText}>
-                                    PM 2.5
-                                </Typography>
                                 <ColorsMeter
                                     reading={userData.selectedStation}
                                     dataType="PM2.5"
                                     bgColor="none"
+                                    showType
                                 />
                             </div>
                             <div className={styles.reading}>
-                                <Typography className={styles.readingText}>
-                                    PM 10
-                                </Typography>
                                 <ColorsMeter
                                     reading={userData.selectedStation}
                                     dataType="PM10"
                                     bgColor="none"
+                                    showType
                                 />
                             </div>
                         </div>
                         <div className={styles.body}>
                             {expanded && (
-                                <>
-                                    <div>
-                                        <Button
-                                            onClick={() =>
-                                                setExpanded(!expanded)
-                                            }
-                                        >
-                                            Foo
-                                        </Button>
-                                        <Button
-                                            onClick={() => {
-                                                dispatch(
-                                                    clearSelectedStation()
-                                                );
-                                                setExpanded(false);
-                                            }}
-                                        >
-                                            Hide
-                                        </Button>
-                                        <Button
-                                            onClick={() =>
-                                                setExpanded(!expanded)
-                                            }
-                                        >
-                                            Foo
-                                        </Button>
-                                        <Button
-                                            onClick={() => {
-                                                dispatch(
-                                                    clearSelectedStation()
-                                                );
-                                                setExpanded(false);
-                                            }}
-                                        >
-                                            Hide
-                                        </Button>
-                                        <Button
-                                            onClick={() =>
-                                                setExpanded(!expanded)
-                                            }
-                                        >
-                                            Foo
-                                        </Button>
-                                        <Button
-                                            onClick={() => {
-                                                dispatch(
-                                                    clearSelectedStation()
-                                                );
-                                                setExpanded(false);
-                                            }}
-                                        >
-                                            Hide
-                                        </Button>
-                                        <Button
-                                            onClick={() =>
-                                                setExpanded(!expanded)
-                                            }
-                                        >
-                                            Foo
-                                        </Button>
-                                        <Button
-                                            onClick={() => {
-                                                dispatch(
-                                                    clearSelectedStation()
-                                                );
-                                                setExpanded(false);
-                                            }}
-                                        >
-                                            Hide
-                                        </Button>
-                                        <Button
-                                            onClick={() =>
-                                                setExpanded(!expanded)
-                                            }
-                                        >
-                                            Foo
-                                        </Button>
-                                        <Button
-                                            onClick={() => {
-                                                dispatch(
-                                                    clearSelectedStation()
-                                                );
-                                                setExpanded(false);
-                                            }}
-                                        >
-                                            Hide
-                                        </Button>
-                                    </div>
-                                </>
+                                <WeatherInfo
+                                    weather={weather.selectedWeather}
+                                />
                             )}
                         </div>
                     </>

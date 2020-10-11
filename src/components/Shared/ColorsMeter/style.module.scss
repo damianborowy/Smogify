@@ -1,11 +1,18 @@
 .colorMeter {
     display: flex;
     width: 100%;
-    height: 39px;
     justify-content: center;
     align-items: center;
-    padding: 4px 8px 12px;
     box-sizing: border-box;
+}
+
+.meterWithType {
+    height: 48px;
+}
+
+.meterWithoutType {
+    height: 39px;
+    padding: 4px 8px 12px;
 }
 
 .colors {
@@ -46,4 +53,11 @@ div .unit {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+div .readingText {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    width: 50px;
 }

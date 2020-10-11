@@ -18,7 +18,7 @@ const MapPage = () => {
                 </div>
             </div>
             <div className={styles.stationView}>
-                <StationView dataType={dataType} />
+                <StationView />
             </div>
         </div>
     );

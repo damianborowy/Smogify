@@ -5,18 +5,14 @@ import styles from "./style.module.scss";
 
 interface WeatherInfoProps {
     weather: OpenWeatherMapData | null;
-    // pollution: SensorReading;
 }
 
 const WeatherInfo = ({ weather }: WeatherInfoProps) => {
     return (
         <div>
             <Paper className={styles.container}>
-                {/* {pollution.aqi25} */}
-                {weather && weather.city}
-                {weather && weather.location.lat}
-                {weather &&
-                    weather.weatherReadings.map((reading) => reading.temp)}
+                <p>{weather && weather.location.lat}</p>
+                <p>Foo</p>
             </Paper>
         </div>
     );

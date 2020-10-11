@@ -17,7 +17,7 @@ interface PointerProps {
     currentValue?: number;
 }
 
-const Pointer = ({ index, dataType }: PointerProps) => {
+const Pointer = ({ index, dataType, currentValue }: PointerProps) => {
     const theme = useTheme();
 
     const getValue = () => {
@@ -61,9 +61,15 @@ interface ColorsMeterProps {
     dataType: string;
     bgColor: "default" | "none";
     reading?: SensorReading;
+    showType?: boolean;
 }
 
-const ColorsMeter = ({ dataType, bgColor, reading }: ColorsMeterProps) => {
+const ColorsMeter = ({
+    dataType,
+    bgColor,
+    reading,
+    showType,
+}: ColorsMeterProps) => {
     const theme = useTheme();
 
     const dataTypeColors =
@@ -119,7 +125,6 @@ const ColorsMeter = ({ dataType, bgColor, reading }: ColorsMeterProps) => {
     const isDataPresent = () => {
         if (!reading) return true;
 
-
         switch (dataType) {
             case "PM2.5":
                 return typeof reading.aqi25 === "number";
@@ -135,7 +140,18 @@ const ColorsMeter = ({ dataType, bgColor, reading }: ColorsMeterProps) => {
     return (
         <>
             {isDataPresent() ? (
-                <div className={styles.colorMeter} style={getBackgroundColor()}>
+                <div
+                    className={clsx(styles.colorMeter, {
+                        [styles.meterWithoutType]: !showType,
+                        [styles.meterWithType]: showType,
+                    })}
+                    style={getBackgroundColor()}
+                >
+                    {showType && (
+                        <Typography className={styles.readingText}>
+                            {dataType === "PM2.5" ? "PM 2.5" : "PM 10"}
+                        </Typography>
+                    )}
                     <div className={styles.colors}>
                         {mapColorsToComponents()}
                     </div>

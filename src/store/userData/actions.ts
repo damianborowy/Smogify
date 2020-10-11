@@ -2,6 +2,7 @@ import Location from "../../models/Location";
 import { SensorReading } from "../../models/Luftdaten";
 import {
     CLEAR_SELECTED_STATION,
+    UPDATE_FAVOURITE_STATIONS,
     UPDATE_LOCATION,
     UPDATE_SELECTED_STATION,
     UserDataActionTypes,
@@ -26,5 +27,14 @@ export function updateSelectedStation(
 export function clearSelectedStation(): UserDataActionTypes {
     return {
         type: CLEAR_SELECTED_STATION,
+    };
+}
+
+export function updateFavouriteStations(
+    favouriteStations: Location[]
+): UserDataActionTypes {
+    return {
+        type: UPDATE_FAVOURITE_STATIONS,
+        payload: favouriteStations,
     };
 }

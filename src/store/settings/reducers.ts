@@ -1,7 +1,7 @@
 import { SettingsState, SettingsActionTypes, TOGGLE_THEME } from "./types";
 
 const initialState: SettingsState = {
-    darkTheme: true,
+    darkTheme: false,
 };
 
 export function settingsReducer(

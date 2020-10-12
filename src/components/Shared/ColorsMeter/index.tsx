@@ -13,19 +13,36 @@ import clsx from "clsx";
 
 interface CurrentValuePointerProps {
     value: number;
+    group: number[];
 }
 
-const CurrentValuePointer = ({ value }: CurrentValuePointerProps) => {
+const CurrentValuePointer = ({ value, group }: CurrentValuePointerProps) => {
+    const theme = useTheme();
+
     const calculateLeft = () => {
-        return "50%";
+        if (group[1] === Number.MAX_SAFE_INTEGER) return "50%";
+
+        return `${((value - group[0]) / (group[1] - group[0])) * 100}%`;
     };
 
     return (
         <div
             className={styles.currentValuePointer}
-            style={{ left: calculateLeft() }}
+            style={{
+                left: calculateLeft(),
+                backgroundColor:
+                    theme.palette.type === "dark" ? "#eee" : "#111",
+            }}
         >
-            <Typography className={styles.currentValue}>{value}</Typography>
+            <Typography
+                className={styles.currentValue}
+                style={{
+                    color:
+                        theme.palette.type === "dark" ? "lightgray" : "black",
+                }}
+            >
+                {value}
+            </Typography>
         </div>
     );
 };
@@ -92,6 +109,29 @@ const ColorsMeter = ({
         dataTypeColors =
             dataType === "Temperature" ? temperatureColors : aqiColors;
 
+    const getCurrentValue = () =>
+        reading && (dataType === "PM2.5" ? reading.pm25 : reading.pm10);
+
+    const getGroup = () => {
+        const groups = dataType === "PM2.5" ? pm25Groups : pm10Groups,
+            currentValue = getCurrentValue();
+
+        let groupIndex = 0,
+            group = groups[0];
+
+        for (let i = 0; i < groups.length; i++)
+            if (groups[i][0] < currentValue! && currentValue! < groups[i][1]) {
+                groupIndex = i;
+                group = groups[i];
+                break;
+            }
+
+        return {
+            groupIndex,
+            group,
+        };
+    };
+
     const mapColorsToComponents = () => {
         const colorDivs = dataTypeColors.map((color, i) => (
             <React.Fragment key={i}>
@@ -102,7 +142,14 @@ const ColorsMeter = ({
                         backgroundColor: color,
                         width: `calc(100% / ${dataTypeColors.length})`,
                     }}
-                />
+                >
+                    {getCurrentValue() && getGroup().groupIndex === i && (
+                        <CurrentValuePointer
+                            value={getCurrentValue()!}
+                            group={getGroup().group}
+                        />
+                    )}
+                </div>
             </React.Fragment>
         ));
 

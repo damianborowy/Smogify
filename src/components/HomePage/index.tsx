@@ -1,4 +1,4 @@
-import { IconButton, Paper, Typography } from "@material-ui/core";
+import { IconButton, Paper, Typography, useTheme } from "@material-ui/core";
 import { Favorite } from "@material-ui/icons";
 import clsx from "clsx";
 import React from "react";
@@ -16,7 +16,8 @@ const HomePage = () => {
     const weather = useSelector((state: RootState) => state.weather),
         userData = useSelector((state: RootState) => state.userData),
         luftdaten = useSelector((state: RootState) => state.luftdaten),
-        dispatch = useDispatch();
+        dispatch = useDispatch(),
+        theme = useTheme();
 
     const removeFromFavourites = (index: number) => {
         const newFavourites = userData.favouriteStations;
@@ -37,7 +38,13 @@ const HomePage = () => {
             <Typography variant="h6" style={{ marginBottom: 10 }}>
                 Your location
             </Typography>
-            <Paper className={styles.composedInfo}>
+            <Paper
+                className={styles.composedInfo}
+                style={{
+                    backgroundColor:
+                        theme.palette.type === "dark" ? "#252525" : "#f8f8f8",
+                }}
+            >
                 <Typography style={{ padding: "12px 0" }}>
                     {weather.nearbyWeather && weather.nearbyWeather.city}
                 </Typography>
@@ -74,6 +81,12 @@ const HomePage = () => {
                         <Paper
                             className={clsx(styles.composedInfo)}
                             key={`${location.lat},${location.lng}`}
+                            style={{
+                                backgroundColor:
+                                    theme.palette.type === "dark"
+                                        ? "#252525"
+                                        : "#f8f8f8",
+                            }}
                         >
                             <div className={styles.infoHeader}>
                                 <Typography>

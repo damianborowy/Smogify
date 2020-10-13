@@ -1,6 +1,5 @@
 import { ThunkType } from "..";
 import {
-    ExternalSource,
     ExternalSourceResponse,
     LuftdatenResponse,
 } from "../../models/Pollution";
@@ -22,19 +21,19 @@ export const fetchPollutionData = (): ThunkType => async (dispatch) => {
     const pollutionData = PollutionData.fromLuftdaten(luftdatenResponse);
 
     const externalSources = store.getState().userData.externalSources;
-    const externalSourcesData: ExternalSourceResponse[] = [];
 
     for (let source of externalSources) {
         const response: ExternalSourceResponse[] = await fetch(
             source.apiUrl
         ).then((res) => res.json());
 
-        externalSourcesData.push(...response);
+        if (Array.isArray(response)) {
+            try {
+                const externalData = PollutionData.fromExternalSource(response);
+                pollutionData.mergePollutionData(externalData);
+            } catch (e) {}
+        }
     }
-
-    const externalData = PollutionData.fromExternalSource(externalSourcesData);
-
-    pollutionData.mergePollutionData(externalData);
 
     dispatch(updatePollutionData(pollutionData));
 

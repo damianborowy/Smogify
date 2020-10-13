@@ -163,6 +163,8 @@ export class PollutionData {
 
     public static fromExternalSource(pollutionData: ExternalSourceResponse[]) {
         const sensorReadings = pollutionData.map((data) => {
+            if (!data.lat || !data.lng) throw new Error("Incorrect data");
+
             const sensorReading = new SensorReading(
                 new Location(data.lat, data.lng)
             );

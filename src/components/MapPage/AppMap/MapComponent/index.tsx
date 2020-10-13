@@ -28,7 +28,7 @@ const aqiColorsMap = [
     "match",
     ["get", "dbh"],
     ...insertColors(aqiColors),
-    "rgba(0, 0, 0, 0)",
+    "#aaa",
 ];
 
 const temperatureColorsMap = [

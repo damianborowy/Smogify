@@ -8,14 +8,14 @@ import ColorsMeter from "../Shared/ColorsMeter";
 import WeatherInfo from "../Shared/WeatherInfo";
 import styles from "./style.module.scss";
 import { updateFavouriteStations } from "../../store/userData/actions";
-import { updateFavouriteStationData } from "../../store/luftdaten/actions";
+import { updateFavouriteStationData } from "../../store/pollution/actions";
 import { getFavouriteLocationsData } from "../../utils/favouriteLocations";
 import { updateFavouriteWeather } from "../../store/weather/actions";
 
 const HomePage = () => {
     const weather = useSelector((state: RootState) => state.weather),
         userData = useSelector((state: RootState) => state.userData),
-        luftdaten = useSelector((state: RootState) => state.luftdaten),
+        luftdaten = useSelector((state: RootState) => state.pollution),
         dispatch = useDispatch(),
         theme = useTheme();
 

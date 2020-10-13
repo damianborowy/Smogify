@@ -10,7 +10,7 @@ import {
     aqiColors,
     SensorReading,
     temperatureColors,
-} from "../../../../models/Luftdaten";
+} from "../../../../models/Pollution";
 import { fetchWeatherData } from "../../../../store/weather/thunks";
 
 const breakpointLayers = ["housenum-label", "road-label"];

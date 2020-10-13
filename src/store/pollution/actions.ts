@@ -1,4 +1,4 @@
-import { LuftdatenData, SensorReading } from "../../models/Luftdaten";
+import { PollutionData, SensorReading } from "../../models/Pollution";
 import {
     UPDATE_POLLUTION_DATA,
     LuftdatenActionTypes,
@@ -7,7 +7,7 @@ import {
 } from "./types";
 
 export function updatePollutionData(
-    pollutionData: LuftdatenData
+    pollutionData: PollutionData
 ): LuftdatenActionTypes {
     return {
         type: UPDATE_POLLUTION_DATA,

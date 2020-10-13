@@ -1,11 +1,11 @@
 import { settingsReducer } from "./settings/reducers";
 import { Action, CombinedState, combineReducers } from "redux";
 import { userDataReducer } from "./userData/reducers";
-import { luftdatenReducer } from "./luftdaten/reducers";
+import { pollutionReducer } from "./pollution/reducers";
 import { weatherReducer } from "./weather/reducers";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { SettingsState } from "./settings/types";
-import { LuftdatenState } from "./luftdaten/types";
+import { LuftdatenState } from "./pollution/types";
 import { UserDataState } from "./userData/types";
 import { WeatherState } from "./weather/types";
 
@@ -30,7 +30,7 @@ export type ThunkType = ThunkAction<
 export const rootReducer = combineReducers({
     settings: settingsReducer,
     userData: userDataReducer,
-    luftdaten: luftdatenReducer,
+    pollution: pollutionReducer,
     weather: weatherReducer,
 });
 

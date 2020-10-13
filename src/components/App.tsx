@@ -13,7 +13,7 @@ import { updateLocationThunk } from "../store/userData/thunks";
 import {
     fetchNearbyStationData,
     fetchPollutionData,
-} from "../store/luftdaten/thunks";
+} from "../store/pollution/thunks";
 import { clearSelectedStation } from "../store/userData/actions";
 import { fetchWeatherData } from "../store/weather/thunks";
 

@@ -12,7 +12,7 @@ const initialState: LuftdatenState = {
     favouriteStationsData: [],
 };
 
-export function luftdatenReducer(
+export function pollutionReducer(
     state = initialState,
     action: LuftdatenActionTypes
 ): LuftdatenState {

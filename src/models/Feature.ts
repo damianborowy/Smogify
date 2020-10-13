@@ -1,4 +1,4 @@
-import { SensorReading } from "./Luftdaten";
+import { SensorReading } from "./Pollution";
 
 export default class Feature {
     constructor(dbh: number, sensorReading: SensorReading) {

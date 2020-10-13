@@ -29,7 +29,7 @@ export const store = createStore(
 store.subscribe(
     throttle(() => {
         saveState({
-            luftdaten: store.getState().luftdaten,
+            pollution: store.getState().pollution,
             userData: store.getState().userData,
             settings: store.getState().settings,
             weather: store.getState().weather,

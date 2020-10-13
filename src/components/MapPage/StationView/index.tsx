@@ -11,7 +11,7 @@ import styles from "./style.module.scss";
 import { Close, FavoriteBorder, Favorite } from "@material-ui/icons";
 import ColorsMeter from "../../Shared/ColorsMeter";
 import _ from "lodash";
-import { updateFavouriteStationData } from "../../../store/luftdaten/actions";
+import { updateFavouriteStationData } from "../../../store/pollution/actions";
 import { getFavouriteLocationsData } from "../../../utils/favouriteLocations";
 import { fetchWeatherData } from "../../../store/weather/thunks";
 import WeatherInfo from "../../Shared/WeatherInfo";

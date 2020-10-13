@@ -7,7 +7,7 @@ import {
     pm10Groups,
     temperatureGroups,
     SensorReading,
-} from "../../../models/Luftdaten";
+} from "../../../models/Pollution";
 import { Typography, useTheme } from "@material-ui/core";
 import clsx from "clsx";
 
@@ -97,6 +97,7 @@ interface ColorsMeterProps {
     bgColor: "default" | "none";
     reading?: SensorReading;
     showType?: boolean;
+    noData?: boolean;
 }
 
 const ColorsMeter = ({
@@ -104,6 +105,7 @@ const ColorsMeter = ({
     bgColor,
     reading,
     showType,
+    noData,
 }: ColorsMeterProps) => {
     const theme = useTheme(),
         dataTypeColors =
@@ -187,15 +189,13 @@ const ColorsMeter = ({
     };
 
     const isDataPresent = () => {
-        if (!reading) return true;
+        if (!reading) return false;
 
         switch (dataType) {
             case "PM2.5":
                 return typeof reading.aqi25 === "number";
             case "PM10":
                 return typeof reading.aqi10 === "number";
-            case "Temperature":
-                return typeof reading.temperatureGroup === "number";
             default:
                 return false;
         }
@@ -203,39 +203,40 @@ const ColorsMeter = ({
 
     return (
         <>
-            {isDataPresent() ? (
-                <div
-                    className={clsx(styles.colorMeter, {
-                        [styles.meterWithoutType]: !showType,
-                        [styles.meterWithType]: showType,
-                    })}
-                    style={getBackgroundColor()}
-                >
-                    {showType && (
-                        <Typography className={styles.readingText}>
-                            {dataType === "PM2.5" ? "PM 2.5" : "PM 10"}
+            <div
+                className={clsx(styles.colorMeter, {
+                    [styles.meterWithoutType]: !showType,
+                    [styles.meterWithType]: showType,
+                })}
+                style={getBackgroundColor()}
+            >
+                {showType && (
+                    <Typography className={styles.readingText}>
+                        {dataType === "PM2.5" ? "PM 2.5" : "PM 10"}
+                    </Typography>
+                )}
+                <div className={styles.colors}>
+                    {!isDataPresent() && !noData && (
+                        <Typography className={styles.noData}>
+                            No data
                         </Typography>
                     )}
-                    <div className={styles.colors}>
+                    <div className={styles.colorBar}>
                         {mapColorsToComponents()}
                     </div>
-                    <Typography
-                        className={styles.unit}
-                        style={{
-                            color:
-                                theme.palette.type === "dark"
-                                    ? "lightgray"
-                                    : "black",
-                        }}
-                    >
-                        {getUnit()}
-                    </Typography>
                 </div>
-            ) : (
-                <div className={styles.noData}>
-                    <Typography>NO DATA</Typography>
-                </div>
-            )}
+                <Typography
+                    className={styles.unit}
+                    style={{
+                        color:
+                            theme.palette.type === "dark"
+                                ? "lightgray"
+                                : "black",
+                    }}
+                >
+                    {getUnit()}
+                </Typography>
+            </div>
         </>
     );
 };

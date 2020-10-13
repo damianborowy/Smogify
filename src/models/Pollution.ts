@@ -1,4 +1,16 @@
-import Location from "../models/Location";
+import Location from "./Location";
+
+export type ExternalSource = {
+    name: string;
+    apiUrl: string;
+};
+
+export type ExternalSourceResponse = {
+    lat: number;
+    lng: number;
+    pm25?: number;
+    pm10?: number;
+};
 
 export type SensorDataValues = {
     value: number;
@@ -110,7 +122,7 @@ export const pm10Groups = [
     [150, Number.MAX_SAFE_INTEGER],
 ];
 
-export class LuftdatenData {
+export class PollutionData {
     public fetchDate: Date;
     public sensorReadings: SensorReading[];
 
@@ -146,8 +158,31 @@ export class LuftdatenData {
 
         coalescedReadings.forEach((reading) => this.deriveProps(reading));
 
-        return new LuftdatenData(new Date(), coalescedReadings);
+        return new PollutionData(new Date(), coalescedReadings);
     }
+
+    public static fromExternalSource(pollutionData: ExternalSourceResponse[]) {
+        const sensorReadings = pollutionData.map((data) => {
+            const sensorReading = new SensorReading(
+                new Location(data.lat, data.lng)
+            );
+
+            if (data.pm10) sensorReading.pm10 = data.pm10;
+            if (data.pm25) sensorReading.pm25 = data.pm25;
+
+            return sensorReading;
+        });
+
+        const coalescedReadings = this.coalesceReadings(sensorReadings);
+
+        coalescedReadings.forEach((reading) => this.deriveProps(reading));
+
+        return new PollutionData(new Date(), coalescedReadings);
+    }
+
+    public mergePollutionData = (data: PollutionData) => {
+        this.sensorReadings.push(...data.sensorReadings);
+    };
 
     private static coalesceReadings(readings: SensorReading[]) {
         const tempReadings = readings.map((reading) => {

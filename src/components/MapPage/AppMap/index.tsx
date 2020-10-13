@@ -23,7 +23,7 @@ interface AppMapProps {
 
 const AppMap = ({ dataType }: AppMapProps) => {
     const userData = useSelector((state: RootState) => state.userData),
-        luftdatenData = useSelector((state: RootState) => state.luftdaten),
+        luftdatenData = useSelector((state: RootState) => state.pollution),
         [dataSource, setDataSource] = useState<HeatmapDataSource | null>(null),
         [location, setLocation] = useState(
             new Location(userData.location.lat, userData.location.lng)

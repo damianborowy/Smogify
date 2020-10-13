@@ -1,19 +1,19 @@
 import { store } from "..";
 import Location from "../models/Location";
-import { LuftdatenData, SensorReading } from "../models/Luftdaten";
+import { PollutionData, SensorReading } from "../models/Pollution";
 
 export function getFavouriteLocationsData(
     locations: Location[],
-    luftdaten?: LuftdatenData
+    pollution?: PollutionData
 ): SensorReading[] {
-    const { pollutionData } = store.getState().luftdaten;
+    const { pollutionData } = store.getState().pollution;
 
-    if (!luftdaten && pollutionData) luftdaten = pollutionData;
+    if (!pollution && pollutionData) pollution = pollutionData;
 
-    if (luftdaten) {
+    if (pollution) {
         const pollutionMap = new Map<string, SensorReading>();
 
-        luftdaten.sensorReadings.forEach((reading) =>
+        pollution.sensorReadings.forEach((reading) =>
             pollutionMap.set(
                 `${reading.location.lat},${reading.location.lng}`,
                 reading

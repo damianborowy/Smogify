@@ -1,6 +1,10 @@
 import { ThunkType } from "..";
-import { LuftdatenResponse } from "../../models/Luftdaten";
-import { LuftdatenData } from "../../models/Luftdaten";
+import {
+    ExternalSource,
+    ExternalSourceResponse,
+    LuftdatenResponse,
+} from "../../models/Pollution";
+import { PollutionData } from "../../models/Pollution";
 import { calculateDistance } from "../../utils/distance";
 import {
     updateFavouriteStationData,
@@ -11,11 +15,27 @@ import { store } from "../../index";
 import { getFavouriteLocationsData } from "../../utils/favouriteLocations";
 
 export const fetchPollutionData = (): ThunkType => async (dispatch) => {
-    const luftdatenData: LuftdatenResponse[] = await fetch(
+    const luftdatenResponse: LuftdatenResponse[] = await fetch(
         "https://data.sensor.community/static/v1/data.json"
     ).then((res) => res.json());
 
-    const pollutionData = LuftdatenData.fromLuftdaten(luftdatenData);
+    const pollutionData = PollutionData.fromLuftdaten(luftdatenResponse);
+
+    const externalSources = store.getState().userData.externalSources;
+    const externalSourcesData: ExternalSourceResponse[] = [];
+
+    for (let source of externalSources) {
+        const response: ExternalSourceResponse[] = await fetch(
+            source.apiUrl
+        ).then((res) => res.json());
+
+        externalSourcesData.push(...response);
+    }
+
+    const externalData = PollutionData.fromExternalSource(externalSourcesData);
+
+    pollutionData.mergePollutionData(externalData);
+
     dispatch(updatePollutionData(pollutionData));
 
     const favouriteLocations = store.getState().userData.favouriteStations;
@@ -35,7 +55,7 @@ export const fetchNearbyStationData = (): ThunkType => async (dispatch) => {
     ).then((res) => res.json());
 
     if (luftdatenData.length > 0) {
-        const pollutionData = LuftdatenData.fromLuftdaten(luftdatenData)
+        const pollutionData = PollutionData.fromLuftdaten(luftdatenData)
             .sensorReadings.map((reading) => {
                 return {
                     distance: calculateDistance(location, reading.location),

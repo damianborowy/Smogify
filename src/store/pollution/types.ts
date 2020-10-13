@@ -1,4 +1,4 @@
-import { LuftdatenData, SensorReading } from "../../models/Luftdaten";
+import { PollutionData, SensorReading } from "../../models/Pollution";
 
 export const UPDATE_POLLUTION_DATA = "UPDATE_POLLUTION_DATA";
 export const UPDATE_NEARBY_STATION_DATA = "UPDATE_NEARBY_STATION_DATA";
@@ -6,7 +6,7 @@ export const UPDATE_FAVOURITE_STATION_DATA = "UPDATE_FAVOURITE_STATION_DATA";
 
 interface UpdatePollutionData {
     type: typeof UPDATE_POLLUTION_DATA;
-    payload: LuftdatenData;
+    payload: PollutionData;
 }
 
 interface UpdateNearbyStationData {
@@ -20,7 +20,7 @@ interface UpdateFavouriteStationData {
 }
 
 export interface LuftdatenState {
-    pollutionData: LuftdatenData | null;
+    pollutionData: PollutionData | null;
     nearbyStationData: SensorReading | null;
     favouriteStationsData: SensorReading[];
 }

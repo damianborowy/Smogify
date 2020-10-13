@@ -35,6 +35,7 @@ export type TemperatureGroups = {
 export class SensorReading {
     constructor(
         public location: Location,
+        public source: string,
         public pm25?: number,
         public pm10?: number,
         public temperature?: number,
@@ -123,18 +124,16 @@ export const pm10Groups = [
 ];
 
 export class PollutionData {
-    public fetchDate: Date;
-    public sensorReadings: SensorReading[];
-
-    private constructor(fetchDate: Date, sensorReadings: SensorReading[]) {
-        this.fetchDate = fetchDate;
-        this.sensorReadings = sensorReadings;
-    }
+    private constructor(
+        public fetchDate: Date,
+        public sensorReadings: SensorReading[]
+    ) {}
 
     public static fromLuftdaten(luftdatenData: LuftdatenResponse[]) {
         const sensorReadings = luftdatenData.map((data) => {
             const sensorReading = new SensorReading(
-                new Location(data.location.latitude, data.location.longitude)
+                new Location(data.location.latitude, data.location.longitude),
+                "Luftdaten"
             );
 
             data.sensordatavalues.forEach((reading) => {
@@ -166,7 +165,8 @@ export class PollutionData {
             if (!data.lat || !data.lng) throw new Error("Incorrect data");
 
             const sensorReading = new SensorReading(
-                new Location(data.lat, data.lng)
+                new Location(data.lat, data.lng),
+                "Other"
             );
 
             if (data.pm10) sensorReading.pm10 = data.pm10;

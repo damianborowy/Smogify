@@ -7,7 +7,7 @@
 .composedInfo {
     width: 100%;
     max-width: 500px;
-    padding: 8px;
+    padding: 8px 16px;
     box-sizing: border-box;
 }
 
@@ -28,6 +28,10 @@ div .infoHeader {
     align-items: center;
 }
 
-div .favouriteIcon {
+div .icon {
     margin-left: auto;
+}
+
+.weatherInfo {
+    padding: 6px 0 12px;
 }

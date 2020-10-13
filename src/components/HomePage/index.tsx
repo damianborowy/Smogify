@@ -1,5 +1,5 @@
 import { IconButton, Paper, Typography, useTheme } from "@material-ui/core";
-import { Favorite } from "@material-ui/icons";
+import { Favorite, Timeline, FavoriteBorder } from "@material-ui/icons";
 import clsx from "clsx";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,9 +45,17 @@ const HomePage = () => {
                         theme.palette.type === "dark" ? "#252525" : "#f8f8f8",
                 }}
             >
-                <Typography style={{ padding: "12px 0" }}>
-                    {weather.nearbyWeather && weather.nearbyWeather.city}
-                </Typography>
+                <div className={styles.infoHeader}>
+                    <Typography style={{ padding: "12px 0" }}>
+                        {weather.nearbyWeather && weather.nearbyWeather.city}
+                    </Typography>
+                    <IconButton className={styles.icon}>
+                        <Timeline />
+                    </IconButton>
+                    <IconButton>
+                        <FavoriteBorder />
+                    </IconButton>
+                </div>
                 {luftdaten.nearbyStationData ? (
                     <>
                         <ColorsMeter
@@ -69,8 +77,9 @@ const HomePage = () => {
                         close to you. Try adding some to favourites!
                     </Typography>
                 )}
-
-                <WeatherInfo weather={weather.nearbyWeather} />
+                <div className={styles.weatherInfo}>
+                    <WeatherInfo weather={weather.nearbyWeather} />
+                </div>
             </Paper>
             <Typography variant="h6" style={{ marginTop: 30 }}>
                 Favourite stations
@@ -93,8 +102,10 @@ const HomePage = () => {
                                     {weather.favouriteWeather[i] &&
                                         weather.favouriteWeather[i].city}
                                 </Typography>
+                                <IconButton className={styles.icon}>
+                                    <Timeline />
+                                </IconButton>
                                 <IconButton
-                                    className={styles.favouriteIcon}
                                     onClick={() => removeFromFavourites(i)}
                                 >
                                     <Favorite />
@@ -112,9 +123,11 @@ const HomePage = () => {
                                 reading={luftdaten.favouriteStationsData[i]}
                                 showType
                             />
-                            <WeatherInfo
-                                weather={weather.favouriteWeather[i]}
-                            />
+                            <div className={styles.weatherInfo}>
+                                <WeatherInfo
+                                    weather={weather.favouriteWeather[i]}
+                                />
+                            </div>
                         </Paper>
                     ))
                 ) : (

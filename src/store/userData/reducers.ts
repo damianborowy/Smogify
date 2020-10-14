@@ -17,7 +17,7 @@ const initialState: UserDataState = {
         {
             name: "GIOŚ",
             apiUrl:
-                "https://us-central1-smogify-data.cloudfunctions.net/readings",
+                "https://us-central1-smogify-data.cloudfunctions.net/giosReadings",
         },
     ],
 };

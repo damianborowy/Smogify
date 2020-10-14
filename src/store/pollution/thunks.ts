@@ -1,8 +1,5 @@
 import { ThunkType } from "..";
-import {
-    ExternalSourceResponse,
-    LuftdatenResponse,
-} from "../../models/Pollution";
+import { FetchedData } from "../../models/Pollution";
 import { PollutionData } from "../../models/Pollution";
 import { calculateDistance } from "../../utils/distance";
 import {
@@ -14,22 +11,22 @@ import { store } from "../../index";
 import { getFavouriteLocationsData } from "../../utils/favouriteLocations";
 
 export const fetchPollutionData = (): ThunkType => async (dispatch) => {
-    const luftdatenResponse: LuftdatenResponse[] = await fetch(
-        "https://data.sensor.community/static/v1/data.json"
+    const luftdatenResponse: FetchedData = await fetch(
+        "https://us-central1-smogify-data.cloudfunctions.net/luftdatenReadings"
     ).then((res) => res.json());
 
-    const pollutionData = PollutionData.fromLuftdaten(luftdatenResponse);
+    const pollutionData = new PollutionData(luftdatenResponse);
 
     const externalSources = store.getState().userData.externalSources;
 
     for (let source of externalSources) {
-        const response: ExternalSourceResponse[] = await fetch(
-            source.apiUrl
-        ).then((res) => res.json());
+        const response: FetchedData = await fetch(source.apiUrl).then((res) =>
+            res.json()
+        );
 
         if (Array.isArray(response)) {
             try {
-                const externalData = PollutionData.fromExternalSource(response);
+                const externalData = new PollutionData(response);
                 pollutionData.mergePollutionData(externalData);
             } catch (e) {}
         }
@@ -50,13 +47,9 @@ export const fetchNearbyStationData = (): ThunkType => async (dispatch) => {
     const location = store.getState().userData.location,
         pollutionData = store.getState().pollution.pollutionData;
 
-    const luftdatenResponse: LuftdatenResponse[] = await fetch(
-        `https://data.sensor.community/airrohr/v1/filter/area=${location.lat},${location.lng},15`
-    ).then((res) => res.json());
-
-    if (luftdatenResponse.length > 0) {
-        const luftdatenData = PollutionData.fromLuftdaten(luftdatenResponse)
-            .sensorReadings.concat(
+    if (pollutionData && pollutionData.sensorReadings) {
+        const data = pollutionData.sensorReadings
+            .concat(
                 pollutionData?.sensorReadings.filter(
                     (reading) => reading.source !== "Luftdaten"
                 ) ?? []
@@ -71,9 +64,10 @@ export const fetchNearbyStationData = (): ThunkType => async (dispatch) => {
 
         let bestStation = null;
 
-        for (let reading of luftdatenData) {
+        for (let reading of data) {
             if (reading.data.pm10 || reading.data.pm25) {
                 bestStation = reading.data;
+                console.log(bestStation);
                 break;
             }
         }

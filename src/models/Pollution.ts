@@ -5,25 +5,15 @@ export type ExternalSource = {
     apiUrl: string;
 };
 
-export type ExternalSourceResponse = {
-    lat: number;
-    lng: number;
-    pm25?: number;
-    pm10?: number;
-};
-
-export type SensorDataValues = {
-    value: number;
-    value_type: string;
-};
-
-export type LuftdatenResponse = {
-    location: {
-        latitude: number;
-        longitude: number;
-    };
-    sensordatavalues: SensorDataValues[];
-    timestamp: Date;
+export type FetchedData = {
+    source: string;
+    readings: {
+        lat: number;
+        lng: number;
+        pm25?: number;
+        pm10?: number;
+        temperature?: number;
+    }[];
 };
 
 export type TemperatureGroups = {
@@ -124,53 +114,20 @@ export const pm10Groups = [
 ];
 
 export class PollutionData {
-    private constructor(
-        public fetchDate: Date,
-        public sensorReadings: SensorReading[]
-    ) {}
+    public sensorReadings: SensorReading[];
 
-    public static fromLuftdaten(luftdatenData: LuftdatenResponse[]) {
-        const sensorReadings = luftdatenData.map((data) => {
-            const sensorReading = new SensorReading(
-                new Location(data.location.latitude, data.location.longitude),
-                "Luftdaten"
-            );
-
-            data.sensordatavalues.forEach((reading) => {
-                switch (reading.value_type) {
-                    case "P1":
-                        sensorReading.pm10 = reading.value;
-                        break;
-                    case "P2":
-                        sensorReading.pm25 = reading.value;
-                        break;
-                    case "temperature":
-                        sensorReading.temperature = reading.value;
-                        break;
-                }
-            });
-
-            return sensorReading;
-        });
-
-        const coalescedReadings = this.coalesceReadings(sensorReadings);
-
-        coalescedReadings.forEach((reading) => this.deriveProps(reading));
-
-        return new PollutionData(new Date(), coalescedReadings);
-    }
-
-    public static fromExternalSource(pollutionData: ExternalSourceResponse[]) {
-        const sensorReadings = pollutionData.map((data) => {
+    public constructor(pollutionData: FetchedData) {
+        const sensorReadings = pollutionData.readings.map((data) => {
             if (!data.lat || !data.lng) throw new Error("Incorrect data");
 
             const sensorReading = new SensorReading(
                 new Location(data.lat, data.lng),
-                "Other"
+                pollutionData.source
             );
 
             if (data.pm10) sensorReading.pm10 = data.pm10;
             if (data.pm25) sensorReading.pm25 = data.pm25;
+            if (data.temperature) sensorReading.temperature = data.temperature;
 
             return sensorReading;
         });
@@ -179,14 +136,14 @@ export class PollutionData {
 
         coalescedReadings.forEach((reading) => this.deriveProps(reading));
 
-        return new PollutionData(new Date(), coalescedReadings);
+        this.sensorReadings = coalescedReadings;
     }
 
     public mergePollutionData = (data: PollutionData) => {
         this.sensorReadings.push(...data.sensorReadings);
     };
 
-    private static coalesceReadings(readings: SensorReading[]) {
+    private coalesceReadings(readings: SensorReading[]) {
         const tempReadings = readings.map((reading) => {
             return {
                 id: `${reading.location.lat} ${reading.location.lng}`,
@@ -210,10 +167,7 @@ export class PollutionData {
         return Array.from(map.values());
     }
 
-    private static mergeReadings = (
-        existing: SensorReading,
-        other: SensorReading
-    ) => {
+    private mergeReadings = (existing: SensorReading, other: SensorReading) => {
         if (!existing.pm10) existing.pm10 = other.pm10;
         if (!existing.pm25) existing.pm25 = other.pm25;
         if (!existing.temperature) existing.temperature = other.temperature;
@@ -221,12 +175,12 @@ export class PollutionData {
         return existing;
     };
 
-    private static deriveProps(reading: SensorReading) {
+    private deriveProps(reading: SensorReading) {
         this.deriveAqi(reading);
         this.deriveTemperature(reading);
     }
 
-    private static deriveAqi(reading: SensorReading) {
+    private deriveAqi(reading: SensorReading) {
         let pm25index = 0;
         let pm10index = 0;
 
@@ -259,7 +213,7 @@ export class PollutionData {
         reading.aqi = Math.max(pm25index, pm10index);
     }
 
-    private static deriveTemperature(reading: SensorReading) {
+    private deriveTemperature(reading: SensorReading) {
         if (!reading.temperature) return;
 
         for (let i = 0; i < temperatureGroups.length; i++) {

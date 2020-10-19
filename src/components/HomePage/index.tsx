@@ -11,6 +11,9 @@ import { updateFavouriteStations } from "../../store/userData/actions";
 import { updateFavouriteStationData } from "../../store/pollution/actions";
 import { getFavouriteLocationsData } from "../../utils/favouriteLocations";
 import { updateFavouriteWeather } from "../../store/weather/actions";
+import _ from "lodash";
+import { fetchWeatherData } from "../../store/weather/thunks";
+import Location from "../../models/Location";
 
 const HomePage = () => {
     const weather = useSelector((state: RootState) => state.weather),
@@ -33,6 +36,38 @@ const HomePage = () => {
         dispatch(updateFavouriteWeather(newWeather));
     };
 
+    const isNearbyFavourite = (nearbyLocation: Location) => {
+        for (let location of userData.favouriteStations)
+            if (_.isEqual(location, nearbyLocation)) return true;
+
+        return false;
+    };
+
+    const toggleNearbyFavourite = () => {
+        const newFavourites = userData.favouriteStations,
+            nearbyLocation = luftdaten.nearbyStationData?.location;
+
+        if (nearbyLocation) {
+            if (!isNearbyFavourite(nearbyLocation)) {
+                newFavourites.push(nearbyLocation);
+            } else {
+                const removedFavouriteIndex = newFavourites.findIndex(
+                    (location) => _.isEqual(location, nearbyLocation)
+                );
+
+                newFavourites.splice(removedFavouriteIndex, 1);
+            }
+
+            dispatch(updateFavouriteStations(newFavourites));
+            dispatch(
+                updateFavouriteStationData(
+                    getFavouriteLocationsData(newFavourites)
+                )
+            );
+            dispatch(fetchWeatherData());
+        }
+    };
+
     return (
         <Paper className={styles.container} elevation={0} square>
             <Typography variant="h6" style={{ marginBottom: 10 }}>
@@ -52,8 +87,14 @@ const HomePage = () => {
                     <IconButton className={styles.icon}>
                         <Timeline />
                     </IconButton>
-                    <IconButton>
-                        <FavoriteBorder />
+                    <IconButton onClick={toggleNearbyFavourite}>
+                        {isNearbyFavourite(
+                            luftdaten.nearbyStationData?.location!
+                        ) ? (
+                            <Favorite />
+                        ) : (
+                            <FavoriteBorder />
+                        )}
                     </IconButton>
                 </div>
                 {luftdaten.nearbyStationData ? (

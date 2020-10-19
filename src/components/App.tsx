@@ -10,10 +10,7 @@ import { RootState } from "../store";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
 import { updateLocationThunk } from "../store/userData/thunks";
-import {
-    fetchNearbyStationData,
-    fetchPollutionData,
-} from "../store/pollution/thunks";
+import { fetchPollutionData } from "../store/pollution/thunks";
 import { clearSelectedStation } from "../store/userData/actions";
 import { fetchWeatherData } from "../store/weather/thunks";
 
@@ -43,7 +40,6 @@ const App = () => {
         dispatch(clearSelectedStation());
         dispatch(updateLocationThunk());
         dispatch(fetchPollutionData());
-        dispatch(fetchNearbyStationData());
         dispatch(fetchWeatherData());
     }, [dispatch]);
 

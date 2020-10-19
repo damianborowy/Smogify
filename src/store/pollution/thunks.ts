@@ -41,6 +41,7 @@ export const fetchPollutionData = (): ThunkType => async (dispatch) => {
     );
 
     dispatch(updateFavouriteStationData(favouriteLocationsData));
+    dispatch(fetchNearbyStationData());
 };
 
 export const fetchNearbyStationData = (): ThunkType => async (dispatch) => {
@@ -67,7 +68,6 @@ export const fetchNearbyStationData = (): ThunkType => async (dispatch) => {
         for (let reading of data) {
             if (reading.data.pm10 || reading.data.pm25) {
                 bestStation = reading.data;
-                console.log(bestStation);
                 break;
             }
         }

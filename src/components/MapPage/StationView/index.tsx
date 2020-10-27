@@ -8,7 +8,7 @@ import {
     updateFavouriteStations,
 } from "../../../store/userData/actions";
 import styles from "./style.module.scss";
-import { Close, FavoriteBorder, Favorite } from "@material-ui/icons";
+import { Close, FavoriteBorder, Favorite, Timeline } from "@material-ui/icons";
 import ColorsMeter from "../../Shared/ColorsMeter";
 import _ from "lodash";
 import { updateFavouriteStationData } from "../../../store/pollution/actions";
@@ -60,6 +60,9 @@ const StationView = () => {
                 {userData.selectedStation && (
                     <>
                         <div className={styles.header}>
+                            <IconButton>
+                                <Timeline />
+                            </IconButton>
                             <IconButton onClick={toggleFavourite}>
                                 {isStationFavourite() ? (
                                     <Favorite />

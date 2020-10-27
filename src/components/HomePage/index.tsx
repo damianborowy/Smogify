@@ -14,6 +14,7 @@ import { updateFavouriteWeather } from "../../store/weather/actions";
 import _ from "lodash";
 import { fetchWeatherData } from "../../store/weather/thunks";
 import Location from "../../models/Location";
+import withAppBar from "../../utils/withAppBar";
 
 const HomePage = () => {
     const weather = useSelector((state: RootState) => state.weather),
@@ -182,4 +183,4 @@ const HomePage = () => {
     );
 };
 
-export default HomePage;
+export default withAppBar(HomePage);

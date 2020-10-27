@@ -13,6 +13,7 @@ export type FetchedData = {
         pm25?: number;
         pm10?: number;
         temperature?: number;
+        stationId?: number;
     }[];
 };
 
@@ -26,6 +27,7 @@ export class SensorReading {
     constructor(
         public location: Location,
         public source: string,
+        public stationId?: number,
         public pm25?: number,
         public pm10?: number,
         public temperature?: number,
@@ -128,6 +130,7 @@ export class PollutionData {
             if (data.pm10) sensorReading.pm10 = data.pm10;
             if (data.pm25) sensorReading.pm25 = data.pm25;
             if (data.temperature) sensorReading.temperature = data.temperature;
+            if (data.stationId) sensorReading.stationId = data.stationId;
 
             return sensorReading;
         });

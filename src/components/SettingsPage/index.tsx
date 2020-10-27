@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { Button, Paper } from "@material-ui/core";
 import { toggleTheme } from "../../store/settings/actions";
+import withAppBar from "../../utils/withAppBar";
 
 const SettingsPage = () => {
     const settings = useSelector((state: RootState) => state.settings),
@@ -26,4 +27,4 @@ const SettingsPage = () => {
     );
 };
 
-export default SettingsPage;
+export default withAppBar(SettingsPage);

@@ -22,7 +22,11 @@ const NearbyInfo = () => {
 
     const isNearbyFavourite = (nearbyLocation: Location) => {
         for (let location of userData.favouriteStations)
-            if (_.isEqual(location, nearbyLocation)) return true;
+            if (
+                location.lng === nearbyLocation.lng &&
+                location.lat === nearbyLocation.lat
+            )
+                return true;
 
         return false;
     };

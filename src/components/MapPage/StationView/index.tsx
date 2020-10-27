@@ -23,7 +23,10 @@ const StationView = () => {
 
     const isStationFavourite = () => {
         for (let location of userData.favouriteStations)
-            if (_.isEqual(location, userData.selectedStation!.location))
+            if (
+                location.lng === userData.selectedStation!.location.lng &&
+                location.lat === userData.selectedStation!.location.lat
+            )
                 return true;
 
         return false;

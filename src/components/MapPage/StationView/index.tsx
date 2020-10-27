@@ -1,6 +1,6 @@
 import { IconButton, Paper } from "@material-ui/core";
 import clsx from "clsx";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import {
@@ -15,11 +15,16 @@ import { updateFavouriteStationData } from "../../../store/pollution/actions";
 import { getFavouriteLocationsData } from "../../../utils/favouriteLocations";
 import { fetchWeatherData } from "../../../store/weather/thunks";
 import WeatherInfo from "../../Shared/WeatherInfo";
+import PollutionCharts from "../../Shared/PollutionCharts";
 
 const StationView = () => {
     const userData = useSelector((state: RootState) => state.userData),
         weather = useSelector((state: RootState) => state.weather),
-        dispatch = useDispatch();
+        dispatch = useDispatch(),
+        [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const isStationFavourite = () => {
         for (let location of userData.favouriteStations)
@@ -63,7 +68,7 @@ const StationView = () => {
                 {userData.selectedStation && (
                     <>
                         <div className={styles.header}>
-                            <IconButton>
+                            <IconButton onClick={handleOpen}>
                                 <Timeline />
                             </IconButton>
                             <IconButton onClick={toggleFavourite}>
@@ -100,6 +105,11 @@ const StationView = () => {
                         <div className={styles.body}>
                             <WeatherInfo weather={weather.selectedWeather} />
                         </div>
+                        <PollutionCharts
+                            open={open}
+                            handleClose={handleClose}
+                            stationId={userData.selectedStation.stationId}
+                        />
                     </>
                 )}
             </Paper>

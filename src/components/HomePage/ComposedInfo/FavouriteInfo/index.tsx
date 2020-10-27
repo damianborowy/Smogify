@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { IconButton, Paper, Typography, useTheme } from "@material-ui/core";
 import { Favorite, Timeline } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +12,7 @@ import WeatherInfo from "../../../Shared/WeatherInfo";
 import Location from "../../../../models/Location";
 import styles from "../style.module.scss";
 import clsx from "clsx";
+import PollutionCharts from "../../../Shared/PollutionCharts";
 
 interface FavouriteInfoProps {
     location?: Location;
@@ -23,7 +24,11 @@ const FavouriteInfo = ({ location, i }: FavouriteInfoProps) => {
         userData = useSelector((state: RootState) => state.userData),
         luftdaten = useSelector((state: RootState) => state.pollution),
         dispatch = useDispatch(),
-        theme = useTheme();
+        theme = useTheme(),
+        [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const removeFromFavourites = (index: number) => {
         const newFavourites = userData.favouriteStations;
@@ -57,7 +62,10 @@ const FavouriteInfo = ({ location, i }: FavouriteInfoProps) => {
                             {weather.favouriteWeather[i] &&
                                 weather.favouriteWeather[i].city}
                         </Typography>
-                        <IconButton className={styles.icon}>
+                        <IconButton
+                            onClick={handleOpen}
+                            className={styles.icon}
+                        >
                             <Timeline />
                         </IconButton>
                         <IconButton onClick={() => removeFromFavourites(i)}>
@@ -79,6 +87,11 @@ const FavouriteInfo = ({ location, i }: FavouriteInfoProps) => {
                     <div className={styles.weatherInfo}>
                         <WeatherInfo weather={weather.favouriteWeather[i]} />
                     </div>
+                    <PollutionCharts
+                        open={open}
+                        handleClose={handleClose}
+                        stationId={luftdaten.favouriteStationsData[i].stationId}
+                    />
                 </Paper>
             ) : (
                 <></>

@@ -1,0 +1,17 @@
+.charts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.chart {
+    margin: 0 8px 8px;
+    border: none;
+}
+
+div .closeButton {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+}

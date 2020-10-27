@@ -14,8 +14,6 @@ const withAppBar = (WrappedComponent: ComponentClass | FunctionComponent) => {
         const location = useLocation(),
             theme = useTheme();
 
-        console.log(theme);
-
         const getTabName = () => {
             switch (location.pathname) {
                 case "/":

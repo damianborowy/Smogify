@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./style.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { Button, Paper } from "@material-ui/core";
+import { FormControlLabel, Paper, Switch } from "@material-ui/core";
 import { toggleTheme } from "../../store/settings/actions";
 import withAppBar from "../../utils/withAppBar";
 
@@ -12,17 +12,20 @@ const SettingsPage = () => {
 
     return (
         <Paper className={styles.container} elevation={0} square>
-            <div>
-                <div>{settings.darkTheme ? "Dark theme" : "Light theme"}</div>
-                <Paper elevation={2}>
-                    <Button
-                        color="primary"
-                        onClick={() => dispatch(toggleTheme())}
-                    >
-                        Toggle mode
-                    </Button>
-                </Paper>
-            </div>
+            <Paper className={styles.paper} elevation={2}>
+                <FormControlLabel
+                    className={styles.switch}
+                    label="Dark mode"
+                    labelPlacement="start"
+                    control={
+                        <Switch
+                            checked={settings.darkTheme}
+                            color="primary"
+                            onChange={() => dispatch(toggleTheme())}
+                        />
+                    }
+                />
+            </Paper>
         </Paper>
     );
 };

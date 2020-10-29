@@ -3,6 +3,7 @@ import {
     DialogContent,
     DialogTitle,
     IconButton,
+    Typography,
 } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
 import React from "react";
@@ -20,7 +21,7 @@ const PollutionCharts = ({
     handleClose,
 }: PollutionChartsProps) => {
     return (
-        <Dialog open={open} maxWidth="md" onClose={handleClose} fullWidth>
+        <Dialog open={open} maxWidth="md" onClose={handleClose}>
             <DialogTitle>
                 Pollution over time
                 <IconButton
@@ -53,8 +54,10 @@ const PollutionCharts = ({
                 </DialogContent>
             ) : (
                 <DialogContent>
-                    Data of pollution over time is available only for Luftdaten
-                    stations.
+                    <Typography className={styles.noInfo}>
+                        Data of pollution over time is available only for
+                        Luftdaten stations.
+                    </Typography>
                 </DialogContent>
             )}
         </Dialog>

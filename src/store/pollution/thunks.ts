@@ -24,7 +24,7 @@ export const fetchPollutionData = (): ThunkType => async (dispatch) => {
             res.json()
         );
 
-        if (Array.isArray(response)) {
+        if (response.readings && Array.isArray(response.readings)) {
             try {
                 const externalData = new PollutionData(response);
                 pollutionData.mergePollutionData(externalData);

@@ -38,7 +38,7 @@ const WeatherInfo = ({ weather }: WeatherInfoProps) => {
                         <div className={styles.item}>
                             <img
                                 className={styles.icon}
-                                src={`${process.env.PUBLIC_URL}/icons/wi-humidity.svg`}
+                                src={`${process.env.PUBLIC_URL}/icons/wi-rain.svg`}
                                 alt=""
                             />
                             <Typography>{`${(

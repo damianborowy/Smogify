@@ -4,6 +4,7 @@ import { PollutionData } from "../../models/Pollution";
 import { calculateDistance } from "../../utils/distance";
 import {
     updateFavouriteStationData,
+    updateFetchingState,
     updateNearblyStationData,
     updatePollutionData,
 } from "./actions";
@@ -11,24 +12,24 @@ import { store } from "../../index";
 import { getFavouriteLocationsData } from "../../utils/favouriteLocations";
 
 export const fetchPollutionData = (): ThunkType => async (dispatch) => {
-    const luftdatenResponse: FetchedData = await fetch(
-        "https://us-central1-smogify-data.cloudfunctions.net/luftdatenReadings"
-    ).then((res) => res.json());
+    dispatch(updateFetchingState(true));
 
-    const pollutionData = new PollutionData(luftdatenResponse);
-
-    const externalSources = store.getState().userData.externalSources;
+    const externalSources = store.getState().userData.sources,
+        pollutionData = new PollutionData();
 
     for (let source of externalSources) {
-        const response: FetchedData = await fetch(source.apiUrl).then((res) =>
-            res.json()
-        );
+        if (source.enabled) {
+            const response: FetchedData = await fetch(
+                source.apiUrl
+            ).then((res) => res.json());
 
-        if (response.readings && Array.isArray(response.readings)) {
-            try {
-                const externalData = new PollutionData(response);
-                pollutionData.mergePollutionData(externalData);
-            } catch (e) {}
+            if (response.readings && Array.isArray(response.readings)) {
+                if (!response.source) response.source = source.name;
+                try {
+                    const externalData = new PollutionData(response);
+                    pollutionData.mergePollutionData(externalData);
+                } catch (e) {}
+            }
         }
     }
 
@@ -42,6 +43,7 @@ export const fetchPollutionData = (): ThunkType => async (dispatch) => {
 
     dispatch(updateFavouriteStationData(favouriteLocationsData));
     dispatch(fetchNearbyStationData());
+    dispatch(updateFetchingState(false));
 };
 
 export const fetchNearbyStationData = (): ThunkType => async (dispatch) => {

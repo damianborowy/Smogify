@@ -1,5 +1,5 @@
 import Location from "../../models/Location";
-import { ExternalSource, SensorReading } from "../../models/Pollution";
+import { PollutionSource, SensorReading } from "../../models/Pollution";
 import {
     CLEAR_SELECTED_STATION,
     UPDATE_EXTERNAL_DATA_SOURCES,
@@ -41,7 +41,7 @@ export function updateFavouriteStations(
 }
 
 export function updateExternalDataSources(
-    externalSources: ExternalSource[]
+    externalSources: PollutionSource[]
 ): UserDataActionTypes {
     return {
         type: UPDATE_EXTERNAL_DATA_SOURCES,

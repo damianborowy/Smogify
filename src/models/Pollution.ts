@@ -1,12 +1,13 @@
 import Location from "./Location";
 
-export type ExternalSource = {
+export type PollutionSource = {
     name: string;
     apiUrl: string;
+    enabled: boolean;
 };
 
 export type FetchedData = {
-    source: string;
+    source?: string;
     readings: {
         lat: number;
         lng: number;
@@ -118,28 +119,31 @@ export const pm10Groups = [
 export class PollutionData {
     public sensorReadings: SensorReading[];
 
-    public constructor(pollutionData: FetchedData) {
-        const sensorReadings = pollutionData.readings.map((data) => {
-            if (!data.lat || !data.lng) throw new Error("Incorrect data");
+    public constructor(pollutionData?: FetchedData) {
+        if (pollutionData) {
+            const sensorReadings = pollutionData.readings.map((data) => {
+                if (!data.lat || !data.lng) throw new Error("Incorrect data");
 
-            const sensorReading = new SensorReading(
-                new Location(data.lat, data.lng),
-                pollutionData.source
-            );
+                const sensorReading = new SensorReading(
+                    new Location(data.lat, data.lng),
+                    pollutionData.source!
+                );
 
-            if (data.pm10) sensorReading.pm10 = data.pm10;
-            if (data.pm25) sensorReading.pm25 = data.pm25;
-            if (data.temperature) sensorReading.temperature = data.temperature;
-            if (data.stationId) sensorReading.stationId = data.stationId;
+                if (data.pm10) sensorReading.pm10 = data.pm10;
+                if (data.pm25) sensorReading.pm25 = data.pm25;
+                if (data.temperature)
+                    sensorReading.temperature = data.temperature;
+                if (data.stationId) sensorReading.stationId = data.stationId;
 
-            return sensorReading;
-        });
+                return sensorReading;
+            });
 
-        const coalescedReadings = this.coalesceReadings(sensorReadings);
+            const coalescedReadings = this.coalesceReadings(sensorReadings);
 
-        coalescedReadings.forEach((reading) => this.deriveProps(reading));
+            coalescedReadings.forEach((reading) => this.deriveProps(reading));
 
-        this.sensorReadings = coalescedReadings;
+            this.sensorReadings = coalescedReadings;
+        } else this.sensorReadings = [];
     }
 
     public mergePollutionData = (data: PollutionData) => {

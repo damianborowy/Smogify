@@ -4,12 +4,14 @@ import {
     UPDATE_POLLUTION_DATA,
     UPDATE_NEARBY_STATION_DATA,
     UPDATE_FAVOURITE_STATION_DATA,
+    UPDATE_FETCHING_STATE,
 } from "./types";
 
 const initialState: LuftdatenState = {
     pollutionData: null,
     nearbyStationData: null,
     favouriteStationsData: [],
+    isFetching: true,
 };
 
 export function pollutionReducer(
@@ -31,6 +33,11 @@ export function pollutionReducer(
             return {
                 ...state,
                 favouriteStationsData: action.payload,
+            };
+        case UPDATE_FETCHING_STATE:
+            return {
+                ...state,
+                isFetching: action.payload,
             };
         default:
             return state;

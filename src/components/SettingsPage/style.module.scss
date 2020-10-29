@@ -12,6 +12,8 @@ div .switch {
     width: 100%;
     justify-content: space-between;
     margin-left: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
     padding-right: 12px;
     box-sizing: border-box;
 }
@@ -19,4 +21,23 @@ div .switch {
 div .paper {
     width: 100%;
     max-width: 420px;
+    margin-bottom: 25px;
+    margin-top: 5px;
+}
+
+div .addSource {
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+div .addIcon {
+    margin-right: 8px;
+}
+
+div .closeButton {
+    position: absolute;
+    right: 8px;
+    top: 8px;
 }

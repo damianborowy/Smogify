@@ -1,5 +1,5 @@
 import Location from "../../models/Location";
-import { ExternalSource, SensorReading } from "../../models/Pollution";
+import { PollutionSource, SensorReading } from "../../models/Pollution";
 
 export const UPDATE_LOCATION = "UPDATE_LOCATION";
 export const UPDATE_SELECTED_STATION = "UPDATE_SELECTED_STATION";
@@ -28,14 +28,14 @@ interface UpdateFavouriteStations {
 
 interface UpdateExternalDataSources {
     type: typeof UPDATE_EXTERNAL_DATA_SOURCES;
-    payload: ExternalSource[];
+    payload: PollutionSource[];
 }
 
 export interface UserDataState {
     location: Location;
     selectedStation: SensorReading | null;
     favouriteStations: Location[];
-    externalSources: ExternalSource[];
+    sources: PollutionSource[];
 }
 
 export type UserDataActionTypes =

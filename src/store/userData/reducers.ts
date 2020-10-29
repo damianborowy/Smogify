@@ -13,11 +13,18 @@ const initialState: UserDataState = {
     location: new Location(51.11, 17.033),
     selectedStation: null,
     favouriteStations: [],
-    externalSources: [
+    sources: [
+        {
+            name: "Luftdaten",
+            apiUrl:
+                "https://us-central1-smogify-data.cloudfunctions.net/luftdatenReadings",
+            enabled: true,
+        },
         {
             name: "GIOŚ",
             apiUrl:
                 "https://us-central1-smogify-data.cloudfunctions.net/giosReadings",
+            enabled: true,
         },
     ],
 };
@@ -50,7 +57,7 @@ export function userDataReducer(
         case UPDATE_EXTERNAL_DATA_SOURCES:
             return {
                 ...state,
-                externalSources: action.payload,
+                sources: action.payload,
             };
         default:
             return state;

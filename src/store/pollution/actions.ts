@@ -4,6 +4,7 @@ import {
     LuftdatenActionTypes,
     UPDATE_NEARBY_STATION_DATA,
     UPDATE_FAVOURITE_STATION_DATA,
+    UPDATE_FETCHING_STATE,
 } from "./types";
 
 export function updatePollutionData(
@@ -30,5 +31,12 @@ export function updateFavouriteStationData(
     return {
         type: UPDATE_FAVOURITE_STATION_DATA,
         payload: readings,
+    };
+}
+
+export function updateFetchingState(isFetching: boolean): LuftdatenActionTypes {
+    return {
+        type: UPDATE_FETCHING_STATE,
+        payload: isFetching,
     };
 }

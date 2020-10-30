@@ -41,3 +41,20 @@ div .closeButton {
     right: 8px;
     top: 8px;
 }
+
+div .progress {
+    margin-right: 4px;
+}
+
+div .textFields {
+    display: flex;
+    flex-direction: column;
+}
+
+div .textField {
+    margin-bottom: 16px;
+}
+
+div .deleteButton {
+    cursor: pointer;
+}

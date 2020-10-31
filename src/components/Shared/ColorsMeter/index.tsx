@@ -218,7 +218,7 @@ const ColorsMeter = ({
                         {dataType === "PM2.5" ? "PM 2.5" : "PM 10"}
                     </Typography>
                 )}
-                {pollution.isFetching ? (
+                {!noData && pollution.isFetching ? (
                     <div className={styles.fetchingData}>
                         <CircularProgress
                             className={styles.progress}

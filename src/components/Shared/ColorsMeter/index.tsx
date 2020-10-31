@@ -8,8 +8,10 @@ import {
     temperatureGroups,
     SensorReading,
 } from "../../../models/Pollution";
-import { Typography, useTheme } from "@material-ui/core";
+import { CircularProgress, Typography, useTheme } from "@material-ui/core";
 import clsx from "clsx";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 interface CurrentValuePointerProps {
     value: number;
@@ -108,6 +110,7 @@ const ColorsMeter = ({
     noData,
 }: ColorsMeterProps) => {
     const theme = useTheme(),
+        pollution = useSelector((state: RootState) => state.pollution),
         dataTypeColors =
             dataType === "Temperature" ? temperatureColors : aqiColors;
 
@@ -215,16 +218,26 @@ const ColorsMeter = ({
                         {dataType === "PM2.5" ? "PM 2.5" : "PM 10"}
                     </Typography>
                 )}
-                <div className={styles.colors}>
-                    {!isDataPresent() && !noData && (
-                        <Typography className={styles.noData}>
-                            No data
-                        </Typography>
-                    )}
-                    <div className={styles.colorBar}>
-                        {mapColorsToComponents()}
+                {pollution.isFetching ? (
+                    <div className={styles.fetchingData}>
+                        <CircularProgress
+                            className={styles.progress}
+                            size={16}
+                        />
+                        <Typography>Fetching data...</Typography>
                     </div>
-                </div>
+                ) : (
+                    <div className={styles.colors}>
+                        {!isDataPresent() && !noData && (
+                            <Typography className={styles.noData}>
+                                No data
+                            </Typography>
+                        )}
+                        <div className={styles.colorBar}>
+                            {mapColorsToComponents()}
+                        </div>
+                    </div>
+                )}
                 <Typography
                     className={styles.unit}
                     style={{

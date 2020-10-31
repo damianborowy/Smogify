@@ -57,4 +57,10 @@ div .textField {
 
 div .deleteButton {
     cursor: pointer;
+    padding-right: 12px;
+}
+
+div .source {
+    display: flex;
+    align-items: center;
 }

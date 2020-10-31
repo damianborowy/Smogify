@@ -80,5 +80,16 @@ div .currentValuePointer {
 
 div .colorBar {
     display: flex;
-    width: 100%
+    width: 100%;
+}
+
+div .fetchingData {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+div .progress {
+    margin-right: 8px;
 }

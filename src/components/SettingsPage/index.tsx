@@ -68,7 +68,18 @@ const SettingsPage = () => {
     const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) =>
         setSourceUrl(event.target.value);
 
-    const handleSourceDelete = (source: PollutionSource) => {};
+    const handleSourceDelete = (source: PollutionSource) => {
+        const { sources } = userData;
+
+        const sourceIndex = sources.findIndex(
+            (src) => src.name === source.name
+        );
+
+        sources.splice(sourceIndex, 1);
+
+        dispatch(updateExternalDataSources(sources));
+        dispatch(fetchPollutionData());
+    };
 
     const handleSourceToggle = (source: PollutionSource) => {
         const { sources } = userData;
@@ -152,7 +163,7 @@ const SettingsPage = () => {
             <Typography>Data sources</Typography>
             <Paper className={styles.paper} elevation={2}>
                 {userData.sources.map((source, i) => (
-                    <React.Fragment key={source.name}>
+                    <div className={styles.source} key={source.name}>
                         <FormControlLabel
                             className={styles.switch}
                             label={source.name}
@@ -171,7 +182,7 @@ const SettingsPage = () => {
                                 onClick={() => handleSourceDelete(source)}
                             />
                         )}
-                    </React.Fragment>
+                    </div>
                 ))}
                 <Box className={styles.addSource} onClick={handleOpen}>
                     <Add className={styles.addIcon} />

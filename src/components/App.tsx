@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styles from "./App.module.scss";
 import { Route, BrowserRouter } from "react-router-dom";
 import Navigation from "./Navigation";
@@ -7,12 +7,7 @@ import MapPage from "./MapPage";
 import SettingsPage from "./SettingsPage";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import {
-    ThemeProvider,
-    createMuiTheme,
-    Backdrop,
-    CircularProgress,
-} from "@material-ui/core";
+import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
 import { updateLocationThunk } from "../store/userData/thunks";
 import { fetchPollutionData } from "../store/pollution/thunks";
@@ -41,10 +36,8 @@ const lightTheme = createMuiTheme({
 
 const App = () => {
     const settings = useSelector((state: RootState) => state.settings),
-        pollution = useSelector((state: RootState) => state.pollution),
         appTheme = settings.darkTheme ? darkTheme : lightTheme,
-        dispatch = useDispatch(),
-        [open, setOpen] = useState(false);
+        dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(clearSelectedStation());
@@ -52,10 +45,6 @@ const App = () => {
         dispatch(fetchPollutionData());
         dispatch(fetchWeatherData());
     }, [dispatch]);
-
-    useEffect(() => {
-        setOpen(pollution.isFetching);
-    }, [pollution.isFetching]);
 
     return (
         <BrowserRouter>
@@ -68,9 +57,6 @@ const App = () => {
                     </div>
                     <Navigation />
                 </div>
-                <Backdrop open={open} style={{ zIndex: 999 }}>
-                    <CircularProgress />
-                </Backdrop>
             </ThemeProvider>
         </BrowserRouter>
     );

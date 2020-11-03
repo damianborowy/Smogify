@@ -35,17 +35,7 @@ const CurrentValuePointer = ({ value, group }: CurrentValuePointerProps) => {
                 backgroundColor:
                     theme.palette.type === "dark" ? "#eee" : "#111",
             }}
-        >
-            <Typography
-                className={styles.currentValue}
-                style={{
-                    color:
-                        theme.palette.type === "dark" ? "lightgray" : "black",
-                }}
-            >
-                {value}
-            </Typography>
-        </div>
+        />
     );
 };
 
@@ -169,6 +159,21 @@ const ColorsMeter = ({
         return colorDivs;
     };
 
+    const getValueStyles = () => {
+        const { groupIndex } = getGroup();
+
+        if (groupIndex > 1)
+            return {
+                color: "white",
+                backgroundColor: aqiColors[groupIndex],
+            };
+        else
+            return {
+                color: "black",
+                backgroundColor: aqiColors[groupIndex],
+            };
+    };
+
     const getUnit = () => {
         switch (dataType) {
             case "Temperature":
@@ -211,7 +216,11 @@ const ColorsMeter = ({
                     [styles.meterWithoutType]: !showType,
                     [styles.meterWithType]: showType,
                 })}
-                style={getBackgroundColor()}
+                style={{
+                    ...getBackgroundColor(),
+                    marginBottom:
+                        dataType === "PM2.5" && !noData ? 12 : "unset",
+                }}
             >
                 {showType && (
                     <Typography className={styles.readingText}>
@@ -233,6 +242,17 @@ const ColorsMeter = ({
                                 No data
                             </Typography>
                         )}
+                        {isDataPresent() && !noData && (
+                            <div>
+                                <Typography
+                                    className={styles.currentValue}
+                                    style={getValueStyles()}
+                                >
+                                    {getCurrentValue()}
+                                </Typography>
+                            </div>
+                        )}
+
                         <div className={styles.colorBar}>
                             {mapColorsToComponents()}
                         </div>

@@ -48,34 +48,40 @@ div .valueAQI {
 div .unit {
     font-size: 13px;
     margin-left: 11px;
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
 }
 
 div .noData {
     font-size: 12px;
-    margin-top: -18px;
     font-weight: bold;
+    margin-top: 10px;
 }
 
 div .readingText {
     font-size: 12px;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     width: 50px;
+    height: 100%;
+    margin-bottom: -2px;
 }
 
 div .currentValue {
-    position: absolute;
-    top: -15px;
-    font-size: 13px;
-    left: 3px;
+    font-size: 1rem;
     font-weight: bold;
+    margin-bottom: 6px;
+    padding: 2px;
+    border-radius: 4px;
 }
 
 div .currentValuePointer {
     position: absolute;
-    top: -3px;
-    height: 11px;
-    width: 2px;
+    top: -4px;
+    height: 13px;
+    width: 3px;
+    z-index: 5;
 }
 
 div .colorBar {

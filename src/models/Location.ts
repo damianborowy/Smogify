@@ -10,7 +10,7 @@ export default class Location {
         }
     }
 
-    private static getPositionAsPromise(): Promise<Position> {
+    private static getPositionAsPromise(): Promise<GeolocationPosition> {
         return new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(
                 (position) => resolve(position),
